@@ -1,11 +1,11 @@
 
 # WebMUD
 
-A modular MUD framework based on [Socket.IO](https://socket.io/) instead of Telnet. It uses [LokiJS](http://lokijs.org) for fast persistant in-memory storage, which stores all data in a database.json file in the project folder.
+A modular MUD framework based on [Socket.IO](https://socket.io/) instead of Telnet, with a web-based client for connecting to the MUD through your browser. It uses [LokiJS](http://lokijs.org) for fast persistant in-memory storage, which stores all data in a database.json file in the project folder.
 
 ## Features
 
-- Includes a web server (Express) with an interface for connecting to the MUD right through your browser.
+- Sets up a simple web server (Express) with an interface for connecting to the MUD right through your browser.
 - A modular approach from the ground up, allowing it to be used as a micro framework for any type of MUD.
 - Includes basic MUD objects and commands such as rooms, characters and NPC:s.
 
