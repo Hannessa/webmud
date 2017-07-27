@@ -9,6 +9,14 @@ A modular MUD framework based on [Socket.IO](https://socket.io/) instead of Teln
 - A modular approach from the ground up, allowing it to be used as a micro framework for any type of MUD.
 - Includes basic MUD objects and commands such as rooms, characters and NPC:s.
 
+## Installation
+
+1. Clone the repository into a local folder and go into that folder.
+2. Type `npm install` in the terminal to install all required packages.
+3. Type `npm start` to start the web server.
+
+Point your browser to `http://localhost:3000` to connect to your MUD.
+
 ## Bundles
 
 The modules in WebMUD are called *bundles* and are placed in the "/bundles" directory, and can be anything from a parser for a login screen to an in-game command, or an entire combat engine. What bundles are loaded at startup is set in config.js, as well as what initial bundle to run.
@@ -20,11 +28,3 @@ A bundle can have both an init() method that is run as soon as the server starts
 * character-creator: After logging in, this bundle is run to help you create an in-game character.
 * world: After choosing a character, you're sent into the game world. This bundle also handles parsing of in-game commands.
 * command-*: The bundles named "command-" adds support for a command that can be used in the game world. For example "command-look" adds support for the "look" command, which you can type to look at the room you're standing in or examine an object.
-
-## Installation
-
-1. Clone the repository into a local folder and go into that folder.
-2. Type `npm install` in the terminal to install all required packages.
-3. Type `npm start` to start the web server.
-
-Point your browser to `http://localhost:3000` to connect to your MUD.
