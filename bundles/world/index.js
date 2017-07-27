@@ -1,49 +1,97 @@
 var config = require.main.require('./config.js');
 var server = require.main.require('./utils/socket-server.js');
 
+// After choosing a character, you're sent into the game world. This bundle also handles parsing of in-game commands, so should be loaded before any other commands bundles.
 module.exports = {	
 	// Called when bundle is loaded
 	init : function () {
-		// Load all commands
+		// Prepare commands array.
 		if (!("commands" in server)) { server.commands = []; }
 		
+		// Prepare active player count.
+		server.activePlayers = 0;
 		
+		// Object to keep track of player controlled characters.
+		server.characterToPlayer = {};
 	},
 	
-
-	// Called when bundle is run
+	// This is called when a user has chosen a character and enters the game world.
 	run : function (socket) {
+		// Connect player to world
+		this.connectPlayerCharacter(socket);
 		
-		this.connectPlayerToWorld(socket);
-		
-		// Parse commands
+		// Start parsing commands
 		socket.on('input', function (data) {
-			this.runCommand(data.msg, socket);
+			this.runCommand(data.msg, socket.character);
+		}.bind(this));
+		
+		// Listener for when user disconnects
+		socket.on('disconnect', function () {
+			this.disconnectPlayerCharacter(socket);
 		}.bind(this));
 	},
 	
-	connectPlayerToWorld : function (socket) {
-		socket.emit('output', { msg: "Logged into the world as <strong>" + socket.character.name + "</strong>.<br><br>" });
+	// Connect player character to the world
+	connectPlayerCharacter : function (socket) {
+		// Increase active player count
+		server.activePlayers++;
+
+		// Connect character to player socket.
+		server.characterToPlayer[socket.character.$loki] = socket;
 		
-		// If no location is set on character, find room with tag "startLocation" and move it there.
+		// If no location is set on character, find room with tag "startLocation" and move character there.
 		if (!("location" in socket.character)) {
 			var startRoom = server.db.getCollection("objects").find({ 'tags' : { '$contains' : 'startLocation' } })[0];
 			this.moveObject(socket.character, startRoom);
 		};
 		
+		socket.emit('output', { msg: "Logged into the world as <strong>" + socket.character.name + "</strong>.<br><br>" });
+
 		// Run "look" command to look at the room we're standing in
-		this.runCommand("look", socket);
+		this.runCommand("look", socket.character);
 	},
 	
-	runCommand : function (message, socket) {
+	// Disconnect player character
+	disconnectPlayerCharacter : function (socket) {
+		// Decrease active players count
+		server.activePlayers--;
+		
+		// Disconnect character from player
+		server.characterToPlayer[socket.character.$loki] = null;
+		
+		// Remove player from character
+		socket.character = null;
+		
+		// Go to the character-creator
+		server.runBundle("character-creator", socket);
+	},
+	
+	// Get socket from character
+	getSocketFromCharacter : function (character) {
+		return server.characterToPlayer[character.$loki];
+	},
+	
+	// Check if game object is visible
+	isObjectVisible : function (object) {
+		isVisible = true;
+		
+		// Player characters that don't have a player connected should not be visible
+		if (object.playerCharacter && !this.getSocketFromCharacter(object)) {
+			isVisible = false;
+		}
+		
+		return isVisible;
+	},
+	
+	// Run a command for a specific character
+	runCommand : function (message, character) {
+		// Try to get socket if character has a player connected
+		var socket = this.getSocketFromCharacter(character);
+		
 		// Places first parameter in [1] and remaining string in [2]
 		var parsedInput = message.match(/^(\S+)(?:\s+(.+))?/i);
 		var commandString = parsedInput[1].toLowerCase(); // Commands are always lower case
 		var argumentsString = parsedInput[2] ? parsedInput[2] : "";
-		
-		//this.socket.emit('output', { msg: "Command entered in world" });
-		//socket.emit('output', { msg: "Command: " + command });
-		//socket.emit('output', { msg: "Arguments: " + arguments });
 		
 		// Loop through all commands until we have a match
 		var hasMatch = false;
@@ -53,7 +101,7 @@ module.exports = {
 			// Check if the typed in command matches any of the current command's keywords
 			if (command.keywords.indexOf(commandString) != -1) {
 				// We have a match! Run command
-				command.run(argumentsString, socket);
+				command.run(argumentsString, character);
 				
 				// And exit from loop, we don't want more matches.
 				hasMatch = true;
@@ -61,7 +109,7 @@ module.exports = {
 			}
 		}
 		
-		if (!hasMatch) {
+		if (!hasMatch && socket) {
 			socket.emit('output', { msg: "That's not a valid command. Type 'help' for a list of commands." });
 		}
 	},

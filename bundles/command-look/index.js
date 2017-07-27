@@ -1,6 +1,7 @@
 var config = require.main.require('./config.js');
 var server = require.main.require('./utils/socket-server.js');
 
+// Command to look at the room you're standing in or examine an object.
 module.exports = {
 	// Called when bundle is loaded
 	init : function () {
@@ -15,10 +16,19 @@ module.exports = {
 		server.commands.push(command);
 	},
 	
-	runCommand : function (arguments, socket) {
-		arguments = arguments.toLowerCase(); // We want case insensitive arguments
+	runCommand : function (arguments, character) {
+		// Try to get socket if character has a player connected
+		var socket = server.bundles.world.getSocketFromCharacter(character);
 		
-		// Look. No arguments (i.e. "look"), so just view current room
+		// Command is only interesting for player characters
+		if (!socket) {
+			return;
+		}
+		
+		// Make arguments case insensitive
+		arguments = arguments.toLowerCase(); 
+		
+		// "Look". No arguments (i.e. "look"), so just view current room
 		if (arguments == "") {
 			var room = server.db.getCollection('objects').get(socket.character.location);
 			
@@ -38,19 +48,28 @@ module.exports = {
 						continue;
 					}
 					
+					// Don't display hidden objects
+					if (!server.bundles.world.isObjectVisible(object)) {
+						continue;
+					}
+					
 					if (object.type == "object") {
 						contents.push('<span class="object">' + object.name + '</span>');
 					} else if (object.type == "character") {
 						contents.push('<span class="character">' + object.name + '</span>');
-
 					}
 					
 				}
 				socket.emit('output', { msg: contents.join(", ") });
 			}
+			
+			// Exits
+			if (room.exits) {
+				
+			}
 		}
 		
-		// Look <object>
+		// "Look <object>". Examine a specific object
 		if (arguments) {
 			// Find objects in your inventory
 			console.log("Todo: Look at object");

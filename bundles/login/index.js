@@ -1,24 +1,15 @@
 var config = require.main.require('./config.js');
 var server = require.main.require('./utils/socket-server.js');
 
+// This bundle is called from the "welcome" bundle and gives step-by-step instructions for logging in or creating a new account.
 module.exports = {
 	// Called when bundle is loaded
 	init : function () {
-		server.connections = 0;
 	},
 	
 	// Called when bundle is run
 	run : function (socket) {
-		server.connections++; // Increase number of connections.
-
-
-		// Listener for when user disconnects
-		/*socket.on('disconnect', function () {
-			this.connections--; // Decrease connection count
-		});*/
-
 		this.enterEmail(socket);
-
 	},
 	
 	enterEmail : function (socket) {

@@ -1,7 +1,9 @@
 var config = require.main.require('./config.js');
 var server = require.main.require('./utils/socket-server.js');
 
+// Displays a welcome message to the user and then runs bundle "login". This is the default starting bundle that is run when a user first connects to the MUD.
 module.exports = {
+	// Called when bundle is loaded
 	init : function () {
 		this.serverStartTime = new Date();
 	},
@@ -10,11 +12,10 @@ module.exports = {
 	run : function (socket) {
 		socket.emit('output', { msg: "Hello adventurer! Welcome to <strong>" + config.info.name + "</strong>.<br><br>" });
 		socket.emit('output', { msg: "<strong>Server info</strong>" });
-		socket.emit('output', { msg: "Player count: " + server.db.getCollection('accounts').count() });
-		socket.emit('output', { msg: "Object count: " + server.db.getCollection('objects').count() });
+		socket.emit('output', { msg: "Active players: " + server.activePlayers });
+		socket.emit('output', { msg: "Objects in world: " + server.db.getCollection('objects').count() });
 		socket.emit('output', { msg: "Uptime: " + getDuration(this.serverStartTime, new Date()) });
 		socket.emit('output', { msg: "<br>" });
-		//socket.emit('output', { msg: "Active players: " + server.db.getCollection('accounts').count() + "<br><br>" });
 
 		server.runBundle("login", socket);
 
