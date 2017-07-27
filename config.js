@@ -2,7 +2,7 @@ module.exports = {
 	"info" : {
 		name: 'WebMUD',
 	},
-	"bundles" : ["database", "welcome", "login", "character-creator", "world", "command-look"], //, "world"
+	"bundles" : ["database", "welcome", "login", "character-creator", "world", "command-look", "command-quit"], //, "world"
 	"startBundle" : "welcome",
 	"databasePath" : "database.json",
 	"databaseSaveDelay" : 4000, // How often the database is saved, in milliseconds
