@@ -26,12 +26,17 @@ module.exports = {
 			socket.emit('output', { msg: '<span class="roomTitle">' + room.name + '</span>' });
 			socket.emit('output', { msg: '<span class="roomDesc">' + room.desc + '</span>' });
 			
-			// Contents
+			// Contents in room
 			if (room.contents) {
 				var contents = [];
 				for (var i = 0; i < room.contents.length; i++) {
 					var objectId = room.contents[i];
 					var object = server.db.getCollection("objects").get(objectId);
+					
+					// If object is yourself, don't draw it
+					if (object == socket.character) {
+						continue;
+					}
 					
 					if (object.type == "object") {
 						contents.push('<span class="object">' + object.name + '</span>');

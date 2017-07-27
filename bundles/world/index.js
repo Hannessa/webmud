@@ -69,7 +69,7 @@ module.exports = {
 	// Move an object to targetObject
 	moveObject : function (object, targetObject) {
 		// Check if the object is at any location currently
-		if ("location" in object.location) {
+		if ("location" in object) {
 			// Get current location object
 			var currentObject = server.db.getCollection("objects").get(object.location);
 			// Remove us from current location
@@ -81,6 +81,10 @@ module.exports = {
 		object.location = targetObject.$loki;
 		
 		// If we're not already at the new location's contents, add us there
+		if (!("contents" in targetObject)) {
+			targetObject.contents = [];
+		}
+		
 		if (targetObject.contents.indexOf(object.$loki) == -1) {
 			targetObject.contents.push(object.$loki);
 		}
