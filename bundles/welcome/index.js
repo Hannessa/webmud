@@ -14,6 +14,7 @@ module.exports = {
 		socket.emit('output', { msg: "<strong>Server info</strong>" });
 		socket.emit('output', { msg: "Active players: " + server.activePlayers });
 		socket.emit('output', { msg: "Objects in world: " + server.db.getCollection('objects').count() });
+		socket.emit('output', { msg: "Commands supported: " + server.commands.length });
 		socket.emit('output', { msg: "Uptime: " + getDuration(this.serverStartTime, new Date()) });
 		socket.emit('output', { msg: "<br>" });
 
