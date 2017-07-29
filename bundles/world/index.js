@@ -85,13 +85,15 @@ module.exports = {
 	
 	// Run a command for a specific character
 	runCommand : function (message, character) {
+		
+		
 		// Try to get socket if character has a player connected
 		var socket = this.getSocketFromCharacter(character);
 		
 		// Places first parameter in [1] and remaining string in [2]
-		var parsedInput = message.match(/^(\S+)(?:\s+(.+))?/i);
-		var commandString = parsedInput[1].toLowerCase(); // Commands are always lower case
-		var argumentsString = parsedInput[2] ? parsedInput[2] : "";
+		var parsedInput = message.trim().match(/^(\S+)(?:\s+(.+))?/i);
+		var commandString = parsedInput && parsedInput[1] ? parsedInput[1].toLowerCase() : ""; // Commands are always lower case
+		var argumentsString = parsedInput && parsedInput[2] ? parsedInput[2] : "";
 		
 		// Loop through all commands until we have a match
 		var hasMatch = false;
