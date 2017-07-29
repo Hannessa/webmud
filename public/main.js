@@ -1,5 +1,5 @@
 $(function() {
-  var FADE_TIME = 200; // ms
+  var FADE_TIME = 200; // 200 ms
   var TYPING_TIMER_LENGTH = 400; // ms
   var COLORS = [
     '#e21400', '#91580f', '#f8a700', '#f78b00',
@@ -61,9 +61,10 @@ $(function() {
     // if there is a non-empty message and a socket connection
     if (message && connected) {
       $inputMessage.val('');
-      addChatMessage({
+	  addChatMessage({
         //username: username,
         msg: '<br>&gt; ' + message
+        //msg: '<div style="margin-top: 5px;"></div>'
       });
       // tell server to execute 'new message' and send along one parameter
       socket.emit('input', {"msg": message});
