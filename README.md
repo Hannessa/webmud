@@ -29,6 +29,6 @@ The modules in WebMUD are called *bundles* and are placed in the "/bundles" dire
 
 ### Bundles details
 
-A bundle can be anything from a login screen parser to an in-game command, or an entire combat engine. They're very flexible in their design, to allow for as much customization and modularity as possible. What bundles are loaded when the server is started is defined in config.js, as well as what specific bundle to run when a user first connects (the so called "starting bundle").
+A bundle can be anything from a login screen parser to an in-game command, or an entire combat engine. They're very flexible in their design, to allow for as much customization and modularity as possible. What bundles are loaded at server startup is defined in config.js, as well as what specific bundle to run when a user first connects (the so called "starting bundle").
 
 A bundle can have both an init() method that is called once globally as soon as the server starts and the module is loaded, and a run() method that is used to run the bundle on demand for a connected user (a.k.a. a "socket"). The init() method can be used to modify global variables, such as adding a new command to the game world, while run() can be used if the bundle is supposed to be run for each user (e.g. display a login screen when a user connects).
