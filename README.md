@@ -19,12 +19,16 @@ Point your browser to `http://localhost:3000` to connect to your MUD.
 
 ## Bundles
 
-The modules in WebMUD are called *bundles* and are placed in the "/bundles" directory, and can be anything from a parser for a login screen to an in-game command, or an entire combat engine. What bundles are loaded at startup is set in config.js, as well as what initial bundle to run when a user connects.
-
-A bundle can have both an init() method that is called once globally as soon as the server starts, and a run() method that is used to run the bundle on demand for each connected user (a.k.a. "socket"). The following bundles are included by default:
+The modules in WebMUD are called *bundles* and are placed in the "/bundles" directory. The following bundles are included by default:
 * database: Sets up a LokiJS database.
 * welcome: Displays a welcome message to the user. This is the default starting bundle that is run when a user first connects to the MUD.
 * login: This bundle is called from the "welcome" bundle and gives step-by-step instructions for logging in or creating a new account.
 * character-creator: After logging in, this bundle is run to help you create an in-game character.
-* world: After choosing a character, you're sent into the game world. This bundle also handles parsing of in-game commands.
-* command-*: The bundles named "command-" adds support for a command that can be used in the game world. For example "command-look" adds support for the "look" command, which you can type to look at the room you're standing in or examine an object.
+* world: After choosing a character, you're sent into the game world. This bundle contains the basic logic used by the game world, such as parsing of in-game commands and helper functions for moving objects.
+* command-xxx: The bundles that start with "command-" adds support for commands that can be used in the game world. For example "command-look" adds support for the "look" command, which you can type to look at the room you're standing in or examine an object. Command bundles doesn't have to be named this way, but it makes it easier to separate them from other bundles.
+
+### Bundles details
+
+A bundle can be anything from a parser for a login screen to an in-game command, or an entire combat engine. They're very flexible in their design, to allow for as much customization and modularity as possible. What bundles are loaded when the server is started is defined in config.js, as well as what specific bundle to run when a user first connects (the so called "starting bundle").
+
+A bundle can have both an init() method that is called once globally as soon as the server starts and the module is loaded, and a run() method that is used to run the bundle on demand for a connected user (a.k.a. a "socket"). The init() method can be used to modify global variables, such as adding a new command to the game world, while run() can be used if the bundle is supposed to be run for each user (e.g. display a login screen when a user connects).
