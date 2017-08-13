@@ -1,7 +1,7 @@
 
 # WebMUD
 
-A modular MUD framework based on [Socket.IO](https://socket.io/) instead of Telnet, with a web-based client for connecting to the MUD through your browser. It uses [LokiJS](http://lokijs.org) for fast persistant in-memory storage, which works with the database in memory, but saves it to a database.json file at regular intervals.
+A modular [MUD](https://en.wikipedia.org/wiki/MUD) framework based on [Socket.IO](https://socket.io/) instead of Telnet, with a web-based client for connecting to the MUD through your browser. It uses [LokiJS](http://lokijs.org) for fast persistant in-memory storage, which works with the database in memory, but saves it to a database.json file at regular intervals.
 
 ## Features
 
