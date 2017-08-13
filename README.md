@@ -20,12 +20,12 @@ Point your browser to `http://localhost:3000` to connect to your MUD.
 ## Bundles
 
 The modules in WebMUD are called *bundles* and are placed in the "/bundles" directory. The following bundles are included by default:
-* database: Sets up a LokiJS database.
-* welcome: Displays a welcome message to the user. This is the default starting bundle that is run when a user first connects to the MUD.
-* login: This bundle is called from the "welcome" bundle and gives step-by-step instructions for logging in or creating a new account.
-* character-creator: After logging in, this bundle is run to help you create an in-game character.
-* world: After choosing a character, you're sent into the game world. This bundle contains the basic logic used by the game world, such as parsing of in-game commands and helper functions for moving objects.
-* command-xxx: The bundles that start with "command-" adds support for commands that can be used in the game world. For example "command-look" adds support for the "look" command, which you can type to look at the room you're standing in or examine an object. Command bundles doesn't have to be named this way, but it makes it easier to separate them from other bundles.
+* **database**: Sets up a LokiJS database.
+* **welcome**: Displays a welcome message to the user. This is the default starting bundle that is run when a user first connects to the MUD.
+* **login**: This bundle is called from the "welcome" bundle and gives step-by-step instructions for logging in or creating a new account.
+* **character-creator**: After logging in, this bundle is run to help you create an in-game character.
+* **world**: After choosing a character, you're sent into the game world. This bundle contains the basic logic used by the game world, such as parsing of in-game commands and helper functions for moving objects.
+* **command-xxx**: The bundles that start with "command-" adds support for commands that can be used in the game world. For example "command-look" adds support for the "look" command, which you can type to look at the room you're standing in or examine an object. Command bundles doesn't have to be named this way, but it makes it easier to separate them from other bundles.
 
 ### Bundles details
 
