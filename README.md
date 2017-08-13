@@ -21,7 +21,7 @@ Point your browser to `http://localhost:3000` to connect to your MUD.
 
 The modules in WebMUD are called *bundles* and are placed in the "/bundles" directory. The following bundles are included by default:
 * **database**: Sets up a LokiJS database.
-* **welcome**: Displays a welcome message to the user. This is the default starting bundle that is run when a user first connects to the MUD.
+* **welcome**: Displays a welcome message to the user. This is the default starting bundle that is run when a user first connects to the server.
 * **login**: This bundle is called from the "welcome" bundle and gives step-by-step instructions for logging in or creating a new account.
 * **character-creator**: After logging in, this bundle is run to help you create an in-game character.
 * **world**: After choosing a character, you're sent into the game world. This bundle contains the basic logic used by the game world, such as parsing of in-game commands and helper functions for moving objects.
