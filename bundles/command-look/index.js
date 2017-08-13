@@ -65,7 +65,35 @@ module.exports = {
 			
 			// Exits
 			if (room.exits) {
+				if (room.exits.n) {
+					var targetRoom = server.db.getCollection("objects").get(room.exits.n.target);
+					socket.emit('output', { msg: 'North: ' + '<span class="roomTitle">' + targetRoom.name + '</span>' });
+				}
 				
+				if (room.exits.s) {
+					var targetRoom = server.db.getCollection("objects").get(room.exits.s.target);
+					socket.emit('output', { msg: 'South: ' + '<span class="roomTitle">' + targetRoom.name + '</span>' });
+				}
+				
+				if (room.exits.w) {
+					var targetRoom = server.db.getCollection("objects").get(room.exits.w.target);
+					socket.emit('output', { msg: 'West: ' + '<span class="roomTitle">' + targetRoom.name + '</span>' });
+				}
+				
+				if (room.exits.e) {
+					var targetRoom = server.db.getCollection("objects").get(room.exits.e.target);
+					socket.emit('output', { msg: 'East: ' + '<span class="roomTitle">' + targetRoom.name + '</span>' });
+				}
+				
+				if (room.exits.u) {
+					var targetRoom = server.db.getCollection("objects").get(room.exits.u.target);
+					socket.emit('output', { msg: 'Up: ' + '<span class="roomTitle">' + targetRoom.name + '</span>' });
+				}
+				
+				if (room.exits.d) {
+					var targetRoom = server.db.getCollection("objects").get(room.exits.d.target);
+					socket.emit('output', { msg: 'Down: ' + '<span class="roomTitle">' + targetRoom.name + '</span>' });
+				}
 			}
 		}
 		

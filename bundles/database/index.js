@@ -31,14 +31,23 @@ module.exports = {
 		// If no room objects are found, create starting room
 		var numRooms = server.db.getCollection('objects').find( {'type':'room'} ).length;
 		if (numRooms == 0) {
-			var room = server.db.getCollection("objects").insert({
+			var room1 = server.db.getCollection("objects").insert({
 				type : "room",
 				name : "Starting Room",
 				desc : "Welcome to your first room in WebMUD. This is just an example of what can be created.",
-				tags : ["startLocation"],
+				tags : ["startLocation", "outside"],
 				coordinates : { x: 0, y: 0, z: 0 },
-				isOutdoor : true,
 			});
+			
+			var room2 = server.db.getCollection("objects").insert({
+				type : "room",
+				name : "Connected Room",
+				desc : "This is a connected room.",
+				tags : [],
+				coordinates : { x: 0, y: 1, z: 0 },
+			});
+			
+			addExit("n", room1, room2);
 			
 			console.log("No rooms found. Created starting room.");
 		}
@@ -50,4 +59,29 @@ module.exports = {
 		}, config.databaseSaveDelay);
 	}
 	
+}
+
+function addExit(direction, fromRoom, toRoom) {
+	if (!fromRoom.exits) {
+		fromRoom.exits = {};
+	}
+	
+	if (!toRoom.exits) {
+		toRoom.exits = {};
+	}
+	
+	fromRoom.exits[direction] = { target : toRoom.$loki }; // , isDoor : true, isClosed : true
+	
+	var reverseDirections = {
+		"n" : "s",
+		"s" : "n",
+		"w" : "e",
+		"e" : "w",
+		"d" : "u",
+		"u" : "d",
+	}
+	
+	var reverseDirection = reverseDirections[direction];
+	
+	toRoom.exits[reverseDirection] = { target : fromRoom.$loki }; // , isDoor : true, isClosed : true
 }
