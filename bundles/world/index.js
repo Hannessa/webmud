@@ -140,11 +140,36 @@ module.exports = {
 		}
 	},
 	
-	
+	// Find target object by string at character's location, or inventory
+	findTargetObject : function (target, character) {
+		target = target.toLowerCase(); 
+		
+		// "Room"
+		if (target == "room") {
+			return server.db.getCollection('objects').get(character.location);
+		}
+		
+		// "Self"
+		else if (target == "self") {
+			return character;
+		}
+		
+		// Try to find object in room
+		var room = server.db.getCollection('objects').get(character.location);
+
+		if (room.contents) {
+			for (var i = 0; i < room.contents.length; i++) {
+				var objectId = room.contents[i];
+				var object = server.db.getCollection("objects").get(objectId);
+				
+				// If object name contains target string, consider it a match and return it as target object
+				// TODO: Change to match only each word in name (split by space), and only from start of string.
+				if (object.name.toLowerCase().indexOf(target) > -1) {
+					return object;
+				}
+			}
+		}
+		
+		// TODO: Try to find object in inventory
+	},
 }
-
-/*setInterval(() => {
-			socket.character.name += "a";
-			socket.emit('output', { msg: "Changed character name to  <strong>" + socket.character.name + "</strong>." });
-
-		}, 1000);*/
