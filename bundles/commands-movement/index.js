@@ -12,7 +12,7 @@ module.exports = {
 		command["run"] = this.runCommandWest.bind(this);
 		command["helpCategory"] = "Exploration";
 		command["helpSyntax"] = ["west"];		
-		command["helpText"] = "Move your character to the west.";		
+		command["helpText"] = "Move to the west.";		
 		server.commands.push(command);
 		
 		command = {};
