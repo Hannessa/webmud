@@ -16,14 +16,9 @@ module.exports = {
 		server.commands.push(command);
 	},
 	
-	runCommand : function (arguments, character) {
-		// Try to get socket if character has a player connected
-		var socket = server.bundles.world.getSocketFromCharacter(character);
-		
-		// Command is only interesting for player characters
-		if (!socket) {
-			return;
-		}
+	runCommand : function (arguments, character, socket) {		
+		// Command can only be used by player-controlled characters (not NPC:s)
+		if (!socket) { return; }
 		
 		// Make arguments case insensitive
 		arguments = arguments.toLowerCase();

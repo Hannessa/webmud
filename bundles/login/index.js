@@ -16,6 +16,8 @@ module.exports = {
 		socket.emit('output', { msg: "Please enter your e-mail to login:" });
 		
 		socket.once('input', function (data) {
+			// Email should always be lowercase.
+			data.msg = data.msg.toLowerCase();
 			if (validateEmail(data.msg)) {
 				this.confirmEmail(socket, data.msg);
 			} else {

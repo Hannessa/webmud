@@ -19,7 +19,7 @@ module.exports = {
 			socket.account.characters = [];
 		}
 		
-		socket.emit('output', { msg: "Choose character:" });
+		socket.emit('output', { msg: "Choose character (enter number):" });
 		
 		var selections = '<div class="selections">';
 		

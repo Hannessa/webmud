@@ -103,7 +103,7 @@ module.exports = {
 			// Check if the typed in command matches any of the current command's keywords
 			if (command.keywords.indexOf(commandString) != -1) {
 				// We have a match! Run command
-				command.run(argumentsString, character);
+				command.run(argumentsString, character, socket);
 				
 				// And exit from loop, we don't want more matches.
 				hasMatch = true;
