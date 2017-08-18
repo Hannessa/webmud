@@ -12,13 +12,13 @@ A modular [MUD](https://en.wikipedia.org/wiki/MUD) framework for [Node.js](https
 ## Installation
 
 1. Install [Node.js](https://nodejs.org/en/).
-1. Download or clone the repository into a local folder and go into that folder.
+1. Download or clone the WebMUD project into a local folder and go into that folder.
 2. Type `npm install` in the terminal to install all required packages.
 3. Type `npm start` to start the web server.
 
 Point your browser to `http://localhost:3000` to connect to your MUD.
 
-Once connected to the MUD, you can create an account and character and log into the game world. You can then type "help" to see a list of all available commands to interact with the world.
+Once connected, you can create an account and character and log into the game world. You can then type "help" to see a list of all available commands to interact with the world.
 
 ## Bundles
 
