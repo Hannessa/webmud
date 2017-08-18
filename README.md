@@ -7,15 +7,18 @@ A modular [MUD](https://en.wikipedia.org/wiki/MUD) framework for [Node.js](https
 
 - Sets up a simple web server (Express) with an interface for connecting to the MUD right through your browser.
 - A modular approach from the ground up, allowing it to be used as a micro framework for any type of MUD.
-- Includes basic MUD objects and commands such as rooms, characters and NPC:s.
+- Includes basic MUD objects such as rooms and characters, and basic commands for world interaction.
 
 ## Installation
 
-1. Clone the repository into a local folder and go into that folder.
+1. Install [Node.js](https://nodejs.org/en/).
+1. Download or clone the repository into a local folder and go into that folder.
 2. Type `npm install` in the terminal to install all required packages.
 3. Type `npm start` to start the web server.
 
 Point your browser to `http://localhost:3000` to connect to your MUD.
+
+Once connected to the MUD, you can create an account and character and log into the game world. You can then type "help" to see a list of all available commands to interact with the world.
 
 ## Bundles
 
@@ -24,8 +27,8 @@ The modules in WebMUD are called *bundles* and are placed in the "/bundles" dire
 * **welcome**: Displays a welcome message to the user. This is the default starting bundle that is run when a user first connects to the server.
 * **login**: This bundle is called from the "welcome" bundle and gives step-by-step instructions for logging in or creating a new account.
 * **character-creator**: After logging in, this bundle is run to help you create an in-game character.
-* **world**: After choosing a character, you're sent into the game world. This bundle contains the basic logic used by the game world, such as parsing of in-game commands and helper functions for moving objects.
-* **command-xxx**: The bundles that start with "command-" add support for commands that can be used in the game world. For example "command-look" adds support for the "look" command, which you can type to look at the room you're standing in or examine an object. Command bundles doesn't have to be named this way, but it makes it easier to separate them from other bundles.
+* **world**: After choosing a character, you're sent into the game world. This bundle contains the basic logic used by the game world, such as parsing of in-game commands and helper functions for moving objects between containers and rooms.
+* **command-xxx**: The bundles that start with "command-" add support for commands that can be used in the game world. For example "command-look" adds support for the "look" command, which you can type to look at the room you're standing in or examine an object. Command bundles doesn't have to be named this way, but it makes it easier to separate them from other bundles. There's also a "help" command that you can type to see a list of all available commands.
 
 ### Bundles details
 
