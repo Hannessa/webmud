@@ -49,19 +49,12 @@ module.exports = {
 			return;
 		}
 		
-		
-		// If this is the only argument, then view 
-		if (propertySplit[currentSplit]) {
-			if (object[propertySplit[currentSplit]]) {
-				object = true;
-			}
-		}
-		
 		while (propertySplit[currentSplit]) {
 			if (object[propertySplit[currentSplit]]) {
 				object = object[propertySplit[currentSplit]];
 			} else {
 				socket.emit('output', { msg: "That property was not found on this object." });
+				return;
 			}
 			
 			currentSplit++;
