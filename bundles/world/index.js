@@ -172,4 +172,34 @@ module.exports = {
 		
 		// TODO: Try to find object in inventory
 	},
+	
+	// Send a message to a character or a room in the game world. If room, the "exclude" variable can be used to exclude characters from recieving the message
+	sendMessage : function (message, target, exclude) {
+		// Todo: Move "socket" to separate module, as to not depend on Sockets.IO and easily switch to others? Also add support for color codes in messages
+		
+		if (target.type == "character") {
+			// If target is character, only send message if we have a player connected to the character
+			var socket = this.getSocketFromCharacter(target);
+			
+			if (socket) {
+				// Character has player, so send message
+				socket.emit('output', { msg: message });
+			}
+			
+		}
+		else if (target.type == "room") {
+			// If target is room, send message to all characters within the room, except those in the exclude variable
+			for (var i = 0; i < target.contents.length; i++) {
+				var object = server.db.getCollection("objects").get(target.contents[i]);
+				
+				// Only send message if we have a character.
+				if (object.type == "character") {
+					// Only send if character is not equal to excluded variable, or is not contained in excluded variable (if it's an array).
+					if (exclude && object != exclude && (exclude instanceof Array && exclude.indexOf(object) == -1)) {
+						this.sendMessage(message, object);
+					}
+				}
+			}
+		}
+	},
 }
