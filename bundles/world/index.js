@@ -231,6 +231,44 @@ module.exports = {
 		// TODO: Try to find object in inventory
 	},
 	
+	// Method for returning gender words for a character. Using male as base to get difference between "his"/"him". (Potential problem: missing difference between "her" and "hers"?)
+	getGenderWords : function (character) {
+		if (!character.gender) {
+			return {
+				he : "it",
+				his : "its",
+				him : "it",
+				himself : "itself",
+				heCaps : "It",
+				hisCaps : "Its",
+				himCaps : "It",
+				himselfCaps : "Itself",
+			};
+		} else if (character.gender == "female") {
+			return {
+				he : "she",
+				his : "her",
+				him : "her",
+				himself : "herself",
+				heCaps : "She",
+				hisCaps : "Her",
+				himCaps : "Her",
+				himselfCaps : "Herself",
+			};
+		} else if (character.gender == "male") {
+			return {
+				he : "he",
+				his : "his",
+				him : "him",
+				himself : "himself",
+				heCaps : "He",
+				hisCaps : "His",
+				himCaps : "Him",
+				himselfCaps : "himself",
+			};
+		}
+	},
+	
 	// Send a message to a character or a room in the game world. If room, the "exclude" variable can be used to exclude characters from recieving the message
 	sendMessage : function (message, target, exclude) {
 		// Todo: Move "socket" to separate module, as to not depend on Sockets.IO and easily switch to others? Also add support for color codes in messages
@@ -253,7 +291,7 @@ module.exports = {
 				// Only send message if we have a character.
 				if (object.type == "character") {
 					// Only send if character is not equal to excluded variable, or is not contained in excluded variable (if it's an array).
-					if (exclude && object != exclude && (exclude instanceof Array && exclude.indexOf(object) == -1)) {
+					if (!exclude || (exclude instanceof Object && object != exclude) || (exclude instanceof Array && exclude.indexOf(object) == -1)) {
 						this.sendMessage(message, object);
 					}
 				}
