@@ -18,12 +18,12 @@ A modular [MUD](https://en.wikipedia.org/wiki/MUD) framework for [Node.js](https
 
 Point your browser to `http://localhost:3000` to connect to your MUD.
 
-Once connected, you can create an account and character and log into the game world. You can then type "help" to see a list of all available commands to interact with the world.
+Once connected, you can create an account and character and log into the game world. You can then type "help" to see a list of all available commands.
 
 ## Bundles
 
 The modules in WebMUD are called *bundles* and are placed in the "/bundles" directory. The following bundles are included by default:
-* **database**: Sets up a LokiJS database.
+* **database-lokijs**: Sets up a LokiJS database.
 * **welcome**: Displays a welcome message to the user. This is the default starting bundle that is run when a user first connects to the server.
 * **login**: This bundle is called from the "welcome" bundle and gives step-by-step instructions for logging in or creating a new account.
 * **character-creator**: After logging in, this bundle is run to help you create an in-game character.
