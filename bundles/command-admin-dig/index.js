@@ -9,7 +9,7 @@ module.exports = {
 		command["keywords"] = [".dig", ".d"];
 		command["run"] = this.runCommand.bind(this);
 		command["helpCategory"] = "Admin";
-		command["helpSyntax"] = [".dig <direction>"];		
+		command["helpSyntax"] = [".dig <direction>", ".dig <direction> <room name>"];		
 		command["helpExample"] = [".dig west"];		
 		command["helpText"] = "Creates a new room at <direction>. Valid directions are: north, south, east, west, up, down.";		
 		
@@ -19,6 +19,8 @@ module.exports = {
 	runCommand : function (arguments, character, socket) {
 		// Command can only be used by player-controlled characters (not NPC:s)
 		if (!socket) { return; }
+		
+		var argumentsSplit = arguments.split(/\s(.+)/);
 		
 		var validDirections = {
 			"n" : "n",
@@ -44,12 +46,12 @@ module.exports = {
 			"d" : { x: 0, y: 0, z: -1 },
 		};
 		
-		if (!validDirections[arguments]) {
+		if (!validDirections[argumentsSplit[0]]) {
 			socket.emit('output', { msg: "Invalid direction. Valid directions are: north, south, east, west, up, down." });
 			return;
 		}
 		
-		var direction = validDirections[arguments];
+		var direction = validDirections[argumentsSplit[0]];
 		
 		var fromRoom = server.db.getEntity(character.location);
 		
@@ -61,7 +63,7 @@ module.exports = {
 		// TODO: Search for coordinates. If there's already a room at those coordinates, the just connect this to it.
 		var toRoom = server.db.insertEntity({
 			type : "room",
-			name : "New Room",
+			name : argumentsSplit[1] ? argumentsSplit[1] : "New Room",
 			desc : "This is a new room.",
 			tags : [],
 			coordinates : {
