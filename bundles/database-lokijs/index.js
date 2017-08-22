@@ -32,6 +32,7 @@ module.exports = {
 			}
 			else {
 				// No backup file, so create new database
+				console.log("No database found, creating new database.");
 				server.lokijsData = {};
 				
 				// Create "accounts" collection for user accounts
@@ -46,8 +47,6 @@ module.exports = {
 				
 				// Save new database to file
 				server.lokijs.saveDatabase();
-				
-				console.log("New database created.");
 			}
 		}
 		else {
