@@ -1,5 +1,6 @@
 var config = require.main.require('./config.js');
 var server = require.main.require('./utils/socket-server.js');
+var world = server.bundles.world;
 
 // Command to look at the room you're standing in or examine an object.
 module.exports = {
@@ -28,44 +29,18 @@ module.exports = {
 			var room = server.db.getEntity(socket.character.location);
 			
 			if (!room) {
-				socket.emit('output', { msg: 'You are floating in empty space. There is no room to look at.' });
+				world.sendMessage('You are floating in empty space. There is no room to look at.', character);
 				return;
 			}
 			
 			// Room description
-			socket.emit('output', { msg: '<span class="roomTitle">' + room.name + '</span>' });
-			socket.emit('output', { msg: '<span class="roomDesc">' + room.desc + '</span>' });
-			
-			// Contents in room
-			if (room.contents) {
-				var contents = [];
-				for (var i = 0; i < room.contents.length; i++) {
-					var objectId = room.contents[i];
-					var object = server.db.getEntity(objectId);
-					
-					// If object is yourself, don't draw it
-					if (object == socket.character) {
-						continue;
-					}
-					
-					// Don't display hidden objects
-					if (!server.bundles.world.isObjectVisible(object)) {
-						continue;
-					}
-					
-					if (object.type == "object") {
-						contents.push('<span class="object">' + object.name + '</span>');
-					} else if (object.type == "character") {
-						contents.push('<span class="character">' + object.name + '</span>');
-					}
-					
-				}
-				socket.emit('output', { msg: contents.join(", ") });
-			}
+			var output = "";
+			output += '<span class="roomTitle">' + room.name + '</span><br>';
+			output += '<span class="roomDesc">' + room.desc + '</span><br>';
 			
 			// Exits
 			if (room.exits) {
-				if (room.exits.n) {
+				/*if (room.exits.n) {
 					var targetRoom = server.db.getEntity(room.exits.n.target);
 					socket.emit('output', { msg: 'North: ' + '<span class="roomTitle">' + targetRoom.name + '</span>' });
 				}
@@ -93,8 +68,54 @@ module.exports = {
 				if (room.exits.d) {
 					var targetRoom = server.db.getEntity(room.exits.d.target);
 					socket.emit('output', { msg: 'Down: ' + '<span class="roomTitle">' + targetRoom.name + '</span>' });
+				}*/
+				
+				var validExits = [];
+				
+				if (room.exits.n) { validExits.push("north"); }
+				if (room.exits.e) { validExits.push("east"); }
+				if (room.exits.s) { validExits.push("south"); }
+				if (room.exits.w) { validExits.push("west"); }
+				if (room.exits.u) { validExits.push("up"); }
+				if (room.exits.d) { validExits.push("down"); }
+
+				output += '<div class="roomExits">[ Exits: ' + validExits.join(", ") + ' ]</div>';
+			}
+			
+			// Contents in room
+			if (room.contents) {
+				var contents = [];
+				for (var i = 0; i < room.contents.length; i++) {
+					var objectId = room.contents[i];
+					var object = server.db.getEntity(objectId);
+					
+					// If object is yourself, don't draw it
+					if (object == socket.character) {
+						continue;
+					}
+					
+					// Don't display hidden objects
+					if (!server.bundles.world.isObjectVisible(object)) {
+						continue;
+					}
+					
+					if (object.type == "object") {
+						contents.push('<span class="object">' + object.name + '</span>');
+					} else if (object.type == "character") {
+						contents.push('<span class="character">' + object.name + '</span>');
+					}
+					
+				}
+				
+				if (contents.length > 0) {
+					output += "<br>" + contents.join(", ");
 				}
 			}
+			
+			
+			
+			world.sendMessage(output, character);
+
 		}
 		// "Look <object>". Examine a specific object
 		else if (arguments) {
