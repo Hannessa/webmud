@@ -29,7 +29,7 @@ module.exports = {
 		// List all characters on this account as 1) <character name>, 2) <character name> etc
 		for (var i = 0; i < socket.account.characters.length; i++) {
 			var characterId = socket.account.characters[i];
-			var character = server.db.getCollection('objects').get(characterId);
+			var character = server.db.getEntity(characterId);
 			selections += (i+1) + ") " + character.name + "<br>"
 
 		}
@@ -48,7 +48,7 @@ module.exports = {
 			else if (typeof socket.account.characters[characterIndex] != "undefined") {
 				// Valid character choice, so login to world with this character
 				var characterId = socket.account.characters[characterIndex];
-				this.loginWithCharacter(socket, server.db.getCollection('objects').get(characterId));
+				this.loginWithCharacter(socket, server.db.getEntity(characterId));
 			} else {
 				// Invalid character choice
 				this.chooseCharacter(socket);
@@ -61,7 +61,7 @@ module.exports = {
 		socket.emit('output', { msg: "Name your character:" });
 		
 		socket.once('input', function (data) {
-			var character = server.db.getCollection("objects").insert({
+			var character = server.db.insertEntity({
 				name : data.msg,
 				type : "character",
 				species : "human",
@@ -70,7 +70,7 @@ module.exports = {
 				
 			});
 			
-			socket.account.characters.push(character.$loki);
+			socket.account.characters.push(server.db.getId(character));
 			
 			//this.chooseSpecies(socket, character);
 			this.chooseCharacter(socket);

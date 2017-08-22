@@ -52,15 +52,15 @@ module.exports = {
 		
 		var direction = validDirections[arguments];
 		
-		var fromRoom = server.db.getCollection('objects').get(character.location);
+		var fromRoom = server.db.getEntity(character.location);
 		
-		if (fromRoom.exits[direction]) {
+		if (fromRoom.exits && fromRoom.exits[direction]) {
 			socket.emit('output', { msg: "There's already a room in that direction." });
 			return;
 		}
 		
 		// TODO: Search for coordinates. If there's already a room at those coordinates, the just connect this to it.
-		var toRoom = server.db.getCollection("objects").insert({
+		var toRoom = server.db.insertEntity({
 			type : "room",
 			name : "New Room",
 			desc : "This is a new room.",

@@ -59,6 +59,7 @@ typings/
 
 # Database file
 database.json
+database.json.bak
 
 # Windows bat-files
 *.bat

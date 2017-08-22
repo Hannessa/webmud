@@ -31,7 +31,7 @@ module.exports = {
 		world.sendMessage('You say, "' + message + '"', character);
 		
 		// Send message to other characters in the room (exclude your own character)
-		var room = server.db.getCollection('objects').get(character.location);
+		var room = server.db.getEntity(character.location);
 		world.sendMessage(character.name + ' says, "' + message + '"', room, character);
 		
 		// Todo: Possible add support for format keyword. See: https://stackoverflow.com/questions/610406/javascript-equivalent-to-printf-string-format

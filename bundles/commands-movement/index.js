@@ -84,14 +84,14 @@ module.exports = {
 		// Try to get socket if character has a player connected
 		var socket = server.bundles.world.getSocketFromCharacter(character);
 		
-		var currentRoom = server.db.getCollection('objects').get(character.location);
+		var currentRoom = server.db.getEntity(character.location);
 		
 		var targetRoom;
 		if (currentRoom.exits) {
 			if (currentRoom.exits[direction]) {
 				// Todo: Also check if direction is closed (i.e. a door)
 				var targetRoomId = currentRoom.exits[direction].target;
-				targetRoom = server.db.getCollection('objects').get(targetRoomId);
+				targetRoom = server.db.getEntity(targetRoomId);
 
 			}
 		}

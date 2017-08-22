@@ -1,15 +1,19 @@
 var config = require.main.require('./config.js');
 var server = require.main.require('./utils/socket-server.js');
-var loki = require('lokijs')
+var loki = require('lokijs');
+var fs = require('fs');
 
 // Sets up a LokiJS database
 module.exports = {
 	// Called when bundle is loaded
 	init : function () {
+		// Setup abstract database layer
+		server.db = this.db;		
+		
 		// Load database json-file at config.databasePath
-		server.db = new loki(config.databasePath, {
+		server.lokijs = new loki(config.databasePath, {
 			autoload: true, // Load database now into memory
-			autoloadCallback: this.databaseInit,
+			autoloadCallback: this.databaseInit.bind(this),
 			//autosave: true, // Save database at predefined intervals
 			//autosaveInterval: config.databaseSaveDelay, // Save database every 4000 ms (4 seconds)
 			//saveCallback: function() { console.log('World saved.'); },
@@ -18,70 +22,97 @@ module.exports = {
 	
 	// After database has been loaded or created, make preparations
 	databaseInit : function () {
-		// Create "accounts" collection for user accounts
-		if (server.db.getCollection("accounts") == null) {
-			server.accounts = server.db.addCollection('accounts', {}); //  indices: ['email'] 
+		if (server.lokijs.getCollection("accounts") == null) {
+			// No data found in database, check if backup file is found.
+			if (fs.existsSync(config.databasePath + '.bak')) {
+				// Backup file found. Try to replace new database file with this one.
+				console.log("No data found in database but backup file found. Restoring from backup file.");
+				fs.rename(config.databasePath + '.bak', config.databasePath, this.init.bind(this));
+				return;
+			}
+			else {
+				
+				server.lokijsData = {};
+				
+				// Create "accounts" collection for user accounts
+				if (server.lokijs.getCollection("accounts") == null) {
+					server.lokijsData["accounts"] = server.lokijs.addCollection('accounts', {}); //  indices: ['email'] 
+				}
+				
+				// Create "entity" collection for all game entities (characters, rooms, objects)
+				if (server.lokijs.getCollection("entities") == null) {
+					server.lokijsData["entities"] = server.lokijs.addCollection('entities', {});
+				}
+				
+				server.lokijs.saveDatabase();
+				
+				console.log("New database created.");
+			}
 		}
 		
-		// Create "accounts" collection for all game objects (characters, rooms, objects)
-		if (server.db.getCollection("objects") == null) {
-			server.objects = server.db.addCollection('objects', {});
-		}
-		
-		// If no room objects are found, create starting room
-		var numRooms = server.db.getCollection('objects').find( {'type':'room'} ).length;
-		if (numRooms == 0) {
-			var room1 = server.db.getCollection("objects").insert({
-				type : "room",
-				name : "Starting Room",
-				desc : "Welcome to your first room in WebMUD. This is just an example of what can be created.",
-				tags : ["startLocation", "outside"],
-				coordinates : { x: 0, y: 0, z: 0 },
-			});
-			
-			var room2 = server.db.getCollection("objects").insert({
-				type : "room",
-				name : "Connected Room",
-				desc : "This is a connected room.",
-				tags : [],
-				coordinates : { x: 0, y: 1, z: 0 },
-			});
-			
-			addExit("n", room1, room2);
-			
-			console.log("No rooms found. Created starting room.");
-		}
+		server.db.isLoaded = true;
+		server.lokijsData = {};
+		server.lokijsData["accounts"] = server.lokijs.getCollection('accounts'); //  indices: ['email'] 
+		server.lokijsData["entities"] = server.lokijs.getCollection('entities'); //  indices: ['email'] 
 
-		// Auto save option in LokiJS does not seem to work, so we use our own autosave instead
+		// Setup autosave at regular intervals
 		setInterval(() => {
-			server.db.saveDatabase();
-			//console.log("Database saved");
+			// First save old file backup
+			fs.createReadStream(config.databasePath).pipe(fs.createWriteStream(config.databasePath + '.bak').on("close", function() {
+				// Backup file saved successful, so save database
+				server.lokijs.saveDatabase();
+			}));
 		}, config.databaseSaveDelay);
-	}
+	},
 	
+	// ************ Abstract database functions ************ //
+	db : {
+		isLoaded : false,
+		
+		count : function(type) {
+			return server.lokijsData[type].count();
+		},
+		
+		insert : function(type, data) {
+			return server.lokijsData[type].insert(data);
+		},
+		
+		insertEntity : function(data) {
+			return server.lokijsData["entities"].insert(data);
+		},
+		
+		insertAccount : function(data) {
+			return server.lokijsData["accounts"].insert(data);
+		},
+		
+		get : function(type, id) {
+			return server.lokijsData[type].get(id);
+		},
+		
+		getEntity : function(id) {
+			return server.lokijsData["entities"].get(id);
+		},
+		
+		getAccount : function(id) {
+			return server.lokijsData["accounts"].get(id);
+		},
+		
+		getEntitiesByTag : function(tagName) {
+			return server.lokijsData["entities"].find({ 'tags' : { '$contains' : tagName } });
+		},
+		
+		getEntitiesByType : function(type) {
+			return server.lokijsData["entities"].find({'type': type});
+		},
+		
+		query : function(type, query) {
+			return server.lokijsData[type].find(query);
+		},
+
+		getId : function(object) {
+			return object.$loki;
+		},
+	
+	}
 }
 
-function addExit(direction, fromRoom, toRoom) {
-	if (!fromRoom.exits) {
-		fromRoom.exits = {};
-	}
-	
-	if (!toRoom.exits) {
-		toRoom.exits = {};
-	}
-	
-	fromRoom.exits[direction] = { target : toRoom.$loki }; // , isDoor : true, isClosed : true
-	
-	var reverseDirections = {
-		"n" : "s",
-		"s" : "n",
-		"w" : "e",
-		"e" : "w",
-		"d" : "u",
-		"u" : "d",
-	}
-	
-	var reverseDirection = reverseDirections[direction];
-	
-	toRoom.exits[reverseDirection] = { target : fromRoom.$loki }; // , isDoor : true, isClosed : true
-}

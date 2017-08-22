@@ -13,8 +13,8 @@ module.exports = {
 		socket.emit('output', { msg: "Hello adventurer! Welcome to <strong>" + config.info.name + "</strong>.<br><br>" });
 		socket.emit('output', { msg: "<strong>Server info</strong>" });
 		socket.emit('output', { msg: "Active players: " + server.activePlayers });
-		if (server.db.getCollection('objects')) {
-			socket.emit('output', { msg: "Objects in world: " + server.db.getCollection('objects').count() });
+		if (server.db.isLoaded) {
+			socket.emit('output', { msg: "World: " + server.db.getEntitiesByType('room').length + " rooms, " + server.db.getEntitiesByType('character').length + " characters, " + server.db.getEntitiesByType('object').length + " objects"});
 		}
 		socket.emit('output', { msg: "Commands supported: " + server.commands.length });
 		socket.emit('output', { msg: "Uptime: " + getDuration(this.serverStartTime, new Date()) });

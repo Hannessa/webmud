@@ -28,7 +28,7 @@ module.exports = {
 	
 	confirmEmail : function (socket, email) {
 		// Check if account already exists for this email in database
-		var rows = server.db.getCollection('accounts').find( {'email': email } ) //var rows = server.accounts.where(function(obj){ return obj.email == email; });
+		var rows = server.db.query('accounts', {'email': email } ); //var rows = server.accounts.where(function(obj){ return obj.email == email; });
 		
 		if (rows.length == 1) {
 			// Account exists, so ask for password.
@@ -73,12 +73,12 @@ module.exports = {
 			if (/^\S{8,}$/.test(data.msg)) {
 				// Password chosen, so save account to database
 				var role = "user";
-				if (server.db.getCollection('accounts').count() == 0) {
+				if (server.db.count('accounts') == 0) {
 					// First account, so set role to superuser.
 					role = "superuser";
 					socket.emit('output', { msg: "First account on server, so has been set to Superuser." });
 				}
-				var account = server.db.getCollection('accounts').insert( { email: email, password: data.msg, role: role } );
+				var account = server.db.insert("accounts", { email: email, password: data.msg, role: role });
 
 				socket.emit('output', { msg: "Account created." });
 

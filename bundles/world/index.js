@@ -33,15 +33,19 @@ module.exports = {
 	
 	// Connect player character to the world
 	connectPlayerCharacter : function (socket) {
+		// Prepare database
+		this.prepareDatabase();
+		
 		// Increase active player count
 		server.activePlayers++;
 
 		// Connect character to player socket.
-		server.characterToPlayer[socket.character.$loki] = socket;
+		server.characterToPlayer[server.db.getId(socket.character)] = socket;
 		
 		// If no location is set on character, find room with tag "startLocation" and move character there.
 		if (!("location" in socket.character)) {
-			var startRoom = server.db.getCollection("objects").find({ 'tags' : { '$contains' : 'startLocation' } })[0];
+			var startRoom = server.db.getEntitiesByTag('startLocation')[0];
+
 			this.moveObject(socket.character, startRoom);
 		};
 		
@@ -51,13 +55,65 @@ module.exports = {
 		this.runCommand("look", socket.character);
 	},
 	
+	prepareDatabase : function() {
+		var numRooms = server.db.getEntitiesByType("room").length;
+
+		if (numRooms == 0) {
+
+			var room1 = server.db.insertEntity({
+					type : "room",
+					name : "Starting Room",
+					desc : "Welcome to your first room in WebMUD. This is just an example of what can be created.",
+					tags : ["startLocation", "outside"],
+					coordinates : { x: 0, y: 0, z: 0 },
+				}
+			);
+			
+			/*var room1 = server.db.insert("objects", {
+					type : "room",
+					name : "Connected Room",
+					desc : "This is a connected room.",
+					tags : [],
+					coordinates : { x: 0, y: 1, z: 0 },
+				}
+			);
+			
+			this.addExit("n", room1, room2);*/
+		}
+	},
+	
+	/*addExit : function(direction, fromRoom, toRoom) {
+		if (!fromRoom.exits) {
+			fromRoom.exits = {};
+		}
+		
+		if (!toRoom.exits) {
+			toRoom.exits = {};
+		}
+		
+		fromRoom.exits[direction] = { target : toRoom.$loki }; // , isDoor : true, isClosed : true
+		
+		var reverseDirections = {
+			"n" : "s",
+			"s" : "n",
+			"w" : "e",
+			"e" : "w",
+			"d" : "u",
+			"u" : "d",
+		}
+		
+		var reverseDirection = reverseDirections[direction];
+		
+		toRoom.exits[reverseDirection] = { target : fromRoom.$loki }; // , isDoor : true, isClosed : true
+	},*/
+	
 	// Disconnect player character
 	disconnectPlayerCharacter : function (socket) {
 		// Decrease active players count
 		server.activePlayers--;
 		
 		// Disconnect character from player
-		server.characterToPlayer[socket.character.$loki] = null;
+		server.characterToPlayer[server.db.getId(socket.character)] = null;
 		
 		// Remove player from character
 		socket.character = null;
@@ -68,7 +124,7 @@ module.exports = {
 	
 	// Get socket from character
 	getSocketFromCharacter : function (character) {
-		return server.characterToPlayer[character.$loki];
+		return server.characterToPlayer[server.db.getId(character)];
 	},
 	
 	// Check if game object is visible
@@ -120,23 +176,25 @@ module.exports = {
 	moveObject : function (object, targetObject) {
 		// Check if the object is at any location currently
 		if ("location" in object) {
-			// Get current location object
-			var currentObject = server.db.getCollection("objects").get(object.location);
-			// Remove us from current location
-			var index = currentObject.contents.indexOf(object.$loki);
-			currentObject.contents.splice(index, 1);
+			// Get current location
+			var currentLocation = server.db.getEntity(object.location);
+			
+			// Remove this object from current location
+			var objectId = server.db.getId(object);
+			var index = currentLocation.contents.indexOf(objectId);
+			currentLocation.contents.splice(index, 1);
 		}
 		
 		// Set new location
-		object.location = targetObject.$loki;
+		object.location = server.db.getId(targetObject);
 		
 		// If we're not already at the new location's contents, add us there
 		if (!("contents" in targetObject)) {
 			targetObject.contents = [];
 		}
 		
-		if (targetObject.contents.indexOf(object.$loki) == -1) {
-			targetObject.contents.push(object.$loki);
+		if (targetObject.contents.indexOf(server.db.getId(object)) == -1) {
+			targetObject.contents.push(server.db.getId(object));
 		}
 	},
 	
@@ -146,7 +204,7 @@ module.exports = {
 		
 		// "Room"
 		if (target == "room") {
-			return server.db.getCollection('objects').get(character.location);
+			return server.db.getEntity(character.location);
 		}
 		
 		// "Self"
@@ -155,12 +213,12 @@ module.exports = {
 		}
 		
 		// Try to find object in room
-		var room = server.db.getCollection('objects').get(character.location);
+		var room = server.db.getEntity(character.location);
 
 		if (room.contents) {
 			for (var i = 0; i < room.contents.length; i++) {
 				var objectId = room.contents[i];
-				var object = server.db.getCollection("objects").get(objectId);
+				var object = server.db.getEntity(objectId);
 				
 				// If object name contains target string, consider it a match and return it as target object
 				// TODO: Change to match only each word in name (split by space), and only from start of string.
@@ -190,7 +248,7 @@ module.exports = {
 		else if (target.type == "room") {
 			// If target is room, send message to all characters within the room, except those in the exclude variable
 			for (var i = 0; i < target.contents.length; i++) {
-				var object = server.db.getCollection("objects").get(target.contents[i]);
+				var object = server.db.getEntity(target.contents[i]);
 				
 				// Only send message if we have a character.
 				if (object.type == "character") {

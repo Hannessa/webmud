@@ -25,7 +25,7 @@ module.exports = {
 		
 		// "Look". No arguments (i.e. "look" or "look room"), so view current room
 		if (arguments == "" || arguments == "room") {
-			var room = server.db.getCollection('objects').get(socket.character.location);
+			var room = server.db.getEntity(socket.character.location);
 			
 			if (!room) {
 				socket.emit('output', { msg: 'You are floating in empty space. There is no room to look at.' });
@@ -41,7 +41,7 @@ module.exports = {
 				var contents = [];
 				for (var i = 0; i < room.contents.length; i++) {
 					var objectId = room.contents[i];
-					var object = server.db.getCollection("objects").get(objectId);
+					var object = server.db.getEntity(objectId);
 					
 					// If object is yourself, don't draw it
 					if (object == socket.character) {
@@ -66,32 +66,32 @@ module.exports = {
 			// Exits
 			if (room.exits) {
 				if (room.exits.n) {
-					var targetRoom = server.db.getCollection("objects").get(room.exits.n.target);
+					var targetRoom = server.db.getEntity(room.exits.n.target);
 					socket.emit('output', { msg: 'North: ' + '<span class="roomTitle">' + targetRoom.name + '</span>' });
 				}
 				
 				if (room.exits.s) {
-					var targetRoom = server.db.getCollection("objects").get(room.exits.s.target);
+					var targetRoom = server.db.getEntity(room.exits.s.target);
 					socket.emit('output', { msg: 'South: ' + '<span class="roomTitle">' + targetRoom.name + '</span>' });
 				}
 				
 				if (room.exits.w) {
-					var targetRoom = server.db.getCollection("objects").get(room.exits.w.target);
+					var targetRoom = server.db.getEntity(room.exits.w.target);
 					socket.emit('output', { msg: 'West: ' + '<span class="roomTitle">' + targetRoom.name + '</span>' });
 				}
 				
 				if (room.exits.e) {
-					var targetRoom = server.db.getCollection("objects").get(room.exits.e.target);
+					var targetRoom = server.db.getEntity(room.exits.e.target);
 					socket.emit('output', { msg: 'East: ' + '<span class="roomTitle">' + targetRoom.name + '</span>' });
 				}
 				
 				if (room.exits.u) {
-					var targetRoom = server.db.getCollection("objects").get(room.exits.u.target);
+					var targetRoom = server.db.getEntity(room.exits.u.target);
 					socket.emit('output', { msg: 'Up: ' + '<span class="roomTitle">' + targetRoom.name + '</span>' });
 				}
 				
 				if (room.exits.d) {
-					var targetRoom = server.db.getCollection("objects").get(room.exits.d.target);
+					var targetRoom = server.db.getEntity(room.exits.d.target);
 					socket.emit('output', { msg: 'Down: ' + '<span class="roomTitle">' + targetRoom.name + '</span>' });
 				}
 			}
