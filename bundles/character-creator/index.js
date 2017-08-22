@@ -19,23 +19,23 @@ module.exports = {
 			socket.account.characters = [];
 		}
 		
-		socket.emit('output', { msg: "Choose character (enter number):" });
+		var output = "<div>Choose character (enter number):</div>";
 		
-		var selections = '<div class="selections">';
+		output += '<div class="selections">';
 		
 		// Also show option for creating new character
-		selections += "0) [Create new character]<br>"
+		output += "0) [Create new character]<br>"
 		
 		// List all characters on this account as 1) <character name>, 2) <character name> etc
 		for (var i = 0; i < socket.account.characters.length; i++) {
 			var characterId = socket.account.characters[i];
 			var character = server.db.getEntity(characterId);
-			selections += (i+1) + ") " + character.name + "<br>"
+			output += (i+1) + ") " + character.name + "<br>"
 
 		}
-		selections += "</div>"
+		output += "</div>"
 
-		socket.emit('output', { msg: selections });
+		socket.emit('output', { msg: output });
 
 		// Listen for input from user
 		socket.once('input', function (data) {

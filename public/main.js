@@ -63,7 +63,7 @@ $(function() {
       $inputMessage.val('');
 	  addChatMessage({
         //username: username,
-        msg: '<br>&gt; ' + message
+        msg: '&gt; ' + message
         //msg: '<div style="margin-top: 5px;"></div>'
       });
       // tell server to execute 'new message' and send along one parameter
@@ -230,7 +230,7 @@ $(function() {
   // Whenever the server emits 'new message', update the chat body
   socket.on('output', function (data) {
     connected = true;
-	//data.msg = "<br>" + data.msg;
+	data.msg = "<br>" + data.msg;
     addChatMessage(data);
   });
   

@@ -10,16 +10,19 @@ module.exports = {
 	
 	// Called when bundle is run
 	run : function (socket) {
-		socket.emit('output', { msg: "Hello adventurer! Welcome to <strong>" + config.info.name + "</strong>.<br><br>" });
-		socket.emit('output', { msg: "<strong>Server info</strong>" });
-		socket.emit('output', { msg: "Active players: " + server.activePlayers });
+		var output = "";
+		
+		output += "Hello adventurer! Welcome to <strong>" + config.info.name + "</strong>.<br><br>";
+		output += "<strong>Server info</strong><br>";
+		output += "Active players: " + server.activePlayers + "<br>";
 		if (server.db.isLoaded) {
-			socket.emit('output', { msg: "World: " + server.db.getEntitiesByType('room').length + " rooms, " + server.db.getEntitiesByType('character').length + " characters, " + server.db.getEntitiesByType('object').length + " objects"});
+			output += "World: " + server.db.getEntitiesByType('room').length + " rooms, " + server.db.getEntitiesByType('character').length + " characters, " + server.db.getEntitiesByType('object').length + " objects<br>";
 		}
-		socket.emit('output', { msg: "Commands supported: " + server.commands.length });
-		socket.emit('output', { msg: "Uptime: " + getDuration(this.serverStartTime, new Date()) });
-		socket.emit('output', { msg: "<br>" });
+		output += "Commands supported: " + server.commands.length + "<br>";
+		output += "Uptime: " + getDuration(this.serverStartTime, new Date()) + "<br>";
 
+		socket.emit('output', { msg: output });
+		
 		server.runBundle("login", socket);
 	},
 }
