@@ -31,7 +31,7 @@ module.exports = {
 				return;
 			}
 			else {
-				
+				// No backup file, so create new database
 				server.lokijsData = {};
 				
 				// Create "accounts" collection for user accounts
@@ -44,16 +44,20 @@ module.exports = {
 					server.lokijsData["entities"] = server.lokijs.addCollection('entities', {});
 				}
 				
+				// Save new database to file
 				server.lokijs.saveDatabase();
 				
 				console.log("New database created.");
 			}
 		}
+		else {
+			// Data was found in database, so just load collections
+			server.lokijsData = {};
+			server.lokijsData["accounts"] = server.lokijs.getCollection('accounts'); //  indices: ['email'] 
+			server.lokijsData["entities"] = server.lokijs.getCollection('entities'); //  indices: ['email'] 
+		}
 		
 		server.db.isLoaded = true;
-		server.lokijsData = {};
-		server.lokijsData["accounts"] = server.lokijs.getCollection('accounts'); //  indices: ['email'] 
-		server.lokijsData["entities"] = server.lokijs.getCollection('entities'); //  indices: ['email'] 
 
 		// Setup autosave at regular intervals
 		setInterval(() => {
