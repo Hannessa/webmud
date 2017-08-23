@@ -72,14 +72,14 @@ module.exports = {
 				
 				var validExits = [];
 				
-				if (room.exits.n) { validExits.push("north"); }
-				if (room.exits.e) { validExits.push("east"); }
-				if (room.exits.s) { validExits.push("south"); }
-				if (room.exits.w) { validExits.push("west"); }
-				if (room.exits.u) { validExits.push("up"); }
-				if (room.exits.d) { validExits.push("down"); }
+				if (room.exits.n) { validExits.push("North"); }
+				if (room.exits.e) { validExits.push("East"); }
+				if (room.exits.s) { validExits.push("South"); }
+				if (room.exits.w) { validExits.push("West"); }
+				if (room.exits.u) { validExits.push("Up"); }
+				if (room.exits.d) { validExits.push("Down"); }
 
-				output += '<div class="roomExits">[ Exits: ' + validExits.join(", ") + ' ]</div>';
+				output += '<div class="roomExits">Exits: ' + validExits.join(", ") + '</div>';
 			}
 			
 			// Contents in room
