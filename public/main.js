@@ -230,7 +230,7 @@ $(function() {
   // Whenever the server emits 'new message', update the chat body
   socket.on('output', function (data) {
     connected = true;
-	data.msg = "<br>" + data.msg;
+	data.msg = "<div>" + data.msg + "</div><br>";
     addChatMessage(data);
   });
   
