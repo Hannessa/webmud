@@ -78,6 +78,8 @@ module.exports = {
 
 			if (/^.{6,}$/.test(password)) {
 				// Password chosen, so save account to database
+				var passwordHashed = this.hashPassword(password);
+
 				var role = "user";
 				if (server.db.count('accounts') == 0) {
 					// First account, so set role to superuser.
@@ -88,7 +90,7 @@ module.exports = {
 				// Save user with encrypted password
 				var account = server.db.insert("accounts", {
 					email: email,
-					password: this.hashPassword(password),
+					password: passwordHashed,
 					role: role
 				});
 
