@@ -1,5 +1,6 @@
 var config = require.main.require('./config.js');
 var server = require.main.require('./utils/socket-server.js');
+var bcrypt = require('bcrypt');
 
 // This bundle is called from the "welcome" bundle and gives step-by-step instructions for logging in or creating a new account.
 module.exports = {
@@ -13,7 +14,7 @@ module.exports = {
 	},
 	
 	enterEmail : function (socket) {
-		socket.emit('output', { msg: "Please enter your e-mail to login:" });
+		socket.emit('output', { msg: "Please enter your e-mail to continue:" });
 		
 		socket.once('input', function (data) {
 			// Email should always be lowercase.
@@ -36,7 +37,7 @@ module.exports = {
 		}
 		else {
 			// Account doesn't exist, so create a new one.
-			socket.emit('output', { msg: "Do you want to create a new account with the e-mail <strong>" + email + "</strong>? Type 'yes' or 'no'" });
+			socket.emit('output', { msg: "Do you want to create a new account with the e-mail <strong>" + email + "</strong>?<br>Type 'yes' or 'no'" });
 			
 			socket.once('input', function (data) {
 				if (/^y(es)?$/i.test(data.msg)) {
@@ -51,10 +52,13 @@ module.exports = {
 	},
 	
 	enterPassword: function(socket, account) {
-		socket.emit('output', { msg: "Please enter your password:" });
+		socket.emit('output', { msg: "Please enter your password:", password: true });
 		
 		socket.once('input', function (data) {
-			if (data.msg == account.password) {
+			var password = data.msg
+
+			// Compare stored password with entered password (hashed)
+			if (this.checkPassword(password, account.password)) {
 				// The password was correct
 				socket.account = account; // Bind socket to account
 				server.runBundle("character-creator", socket); // Run the character creator
@@ -67,10 +71,12 @@ module.exports = {
 	},
 	
 	choosePassword : function (socket, email) {
-		socket.emit('output', { msg: "Choose a password (at least 8 characters, no spaces):" });
+		socket.emit('output', { msg: "Choose a password (6+ characters, will be stored encrypted):", password: true });
 		
 		socket.once('input', function (data) {
-			if (/^\S{8,}$/.test(data.msg)) {
+			var password = data.msg
+
+			if (/^.{6,}$/.test(password)) {
 				// Password chosen, so save account to database
 				var role = "user";
 				if (server.db.count('accounts') == 0) {
@@ -78,7 +84,13 @@ module.exports = {
 					role = "superuser";
 					socket.emit('output', { msg: "First account on server, so has been set to Superuser." });
 				}
-				var account = server.db.insert("accounts", { email: email, password: data.msg, role: role });
+
+				// Save user with encrypted password
+				var account = server.db.insert("accounts", {
+					email: email,
+					password: this.hashPassword(password),
+					role: role
+				});
 
 				socket.emit('output', { msg: "Account created." });
 
@@ -93,6 +105,14 @@ module.exports = {
 			}
 
 		}.bind(this));
+	},
+
+	hashPassword(password) {
+		return bcrypt.hashSync(password + config.securityKey, 10);
+	},
+
+	checkPassword(password, storedPassword) {
+		return bcrypt.compareSync(password + config.securityKey, storedPassword);
 	},
 }
 

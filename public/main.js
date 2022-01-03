@@ -1,3 +1,4 @@
+
 $(function() {
   var FADE_TIME = 200; // 200 ms
   var TYPING_TIMER_LENGTH = 400; // ms
@@ -18,6 +19,7 @@ $(function() {
 
   // Prompt for setting a username
   var username = "Hannes";
+  var isPassword = false;
   var connected = false;
   var typing = false;
   var lastTypingTime;
@@ -60,15 +62,28 @@ $(function() {
     message = cleanInput(message);
     // if there is a non-empty message and a socket connection
     if (message && connected) {
-      $inputMessage.val('');
-	  addChatMessage({
-        //username: username,
-        msg: '&gt; ' + message
-        //msg: '<div style="margin-top: 5px;"></div>'
-      });
-      // tell server to execute 'new message' and send along one parameter
-      socket.emit('input', {"msg": message});
-    }
+        $inputMessage.val('');
+        if ($('.inputMessage').prop("type") == "password") {
+          // Password entered
+          addChatMessage({
+              //username: username,
+              msg: '&gt; *******'
+              //msg: '<div style="margin-top: 5px;"></div>'
+            });
+        } else {
+          // Normal command
+          addChatMessage({
+            //username: username,
+            msg: '&gt; ' + message
+            //msg: '<div style="margin-top: 5px;"></div>'
+          });
+        }
+
+        // Send message to server
+        // tell server to execute 'new message' and send along one parameter
+        socket.emit('input', {"msg": message});
+      }
+
   }
 
   // Log a message
@@ -201,7 +216,7 @@ $(function() {
     if (event.which === 13) {
       if (username) {
         sendMessage();
-        socket.emit('stop typing');
+        //socket.emit('stop typing');
         typing = false;
       } else {
         setUsername();
@@ -210,7 +225,7 @@ $(function() {
   });
 
   $inputMessage.on('input', function() {
-    updateTyping();
+    //updateTyping();
   });
 
   // Click events
@@ -230,7 +245,15 @@ $(function() {
   // Whenever the server emits 'new message', update the chat body
   socket.on('output', function (data) {
     connected = true;
-	data.msg = "<div>" + data.msg + "</div><br>";
+	  data.msg = "<div>" + data.msg + "</div><br>";
+
+    // If we expect password in return
+    if (data.password) {
+      $('.inputMessage').prop("type", "password");
+    } else {
+      $('.inputMessage').prop("type", "text");
+    }
+
     addChatMessage(data);
   });
   
@@ -270,18 +293,18 @@ $(function() {
   });
 
   socket.on('disconnect', function () {
-    log('you have been disconnected');
+    log('You have been disconnected.');
   });
 
   socket.on('reconnect', function () {
-    log('you have been reconnected');
+    log('You have been reconnected.');
     if (username) {
       socket.emit('add user', username);
     }
   });
 
   socket.on('reconnect_error', function () {
-    log('attempt to reconnect has failed');
+    log('Attempt to reconnect has failed.');
   });
 
 });
