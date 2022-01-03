@@ -10,7 +10,7 @@ module.exports = {
 		// Setup abstract database layer
 		server.db = this.db;		
 		
-		// Load database json-file at config.databasePath
+		// Setup loki database
 		server.lokijs = new loki(config.databasePath, {
 			//autoload: true, // Load database now into memory
 			//autoloadCallback: this.databaseInit.bind(this),
@@ -20,20 +20,24 @@ module.exports = {
 			//saveCallback: function() { console.log('World saved.'); },
 		});
 
-		// Load database from file
-		server.lokijs.loadJSON(fs.readFileSync(config.databasePath));
-
+		// Load database
 		this.databaseInit();
 	},
 	
-	// After database has been loaded or created, make preparations
+	// Load database
 	databaseInit : function () {
+		// Attempt to load database file into loki
+		if (fs.existsSync(config.databasePath)) {
+			server.lokijs.loadJSON(fs.readFileSync(config.databasePath));
+		}
+
 		if (server.lokijs.getCollection("accounts") == null) {
 			// No data found in database, check if backup file is found.
 			if (fs.existsSync(config.databasePath + '.bak')) {
 				// Backup file found. Try to replace new database file with this one.
 				console.log("No data found in database but backup file found. Restoring from backup file.");
-				fs.rename(config.databasePath + '.bak', config.databasePath, this.init.bind(this));
+				fs.renameSync(config.databasePath + '.bak', config.databasePath);
+				this.databaseInit()
 				return;
 			}
 			else {
