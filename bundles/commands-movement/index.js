@@ -1,5 +1,6 @@
 var config = require.main.require('./config.js');
 var server = require.main.require('./bundles/server.js');
+var world = server.bundles.world;
 
 // Commands for moving in different directions.
 module.exports = {
@@ -95,26 +96,39 @@ module.exports = {
 
 			}
 		}
+
+		var directions = {
+			"w" : "west",
+			"e" : "east",
+			"n" : "north",
+			"s" : "south",
+			"u" : "up",
+			"d" : "down"
+		}
+		var directionsOpposite = {
+			"w" : "the east",
+			"e" : "the west",
+			"n" : "the south",
+			"s" : "the north",
+			"u" : "down",
+			"d" : "up"
+		}
 		
 		if (targetRoom) {
-			// Valid direction, move character
-			server.bundles.world.moveObject(character, targetRoom);
+			// Valid direction, move character to new room
+			world.moveObject(character, targetRoom);
 			
-			if (socket) {
-				socket.emit('output', { msg: 'You move in that direction.' }); // Todo: Specify direction
-			}
+			world.sendMessage(`You move ${directions[direction]}.`, character);
+			world.sendMessage(`${character.name} moves ${directions[direction]}.`, currentRoom, [character]); // Message to others in old room
+			world.sendMessage(`${character.name} arrives from ${directionsOpposite[direction]}.`, targetRoom, [character]); // Message to others in new room
 			
-			// Todo: Also display to other characters in room that you moved
-			
-			// Run "look" command to look at the room we're standing in
-			server.bundles.world.runCommand("look", character);
+			// Run "look" command to look at the room we're standing in.
+			world.runCommand("look", character);
 			
 		}
 		else {
 			// Invalid direction
-			if (socket) {
-				socket.emit('output', { msg: 'You cannot move in that direction.' }); // Todo: Specify direction
-			}
+			world.sendMessage(`You cannot move ${directions[direction]}.`, character);
 		}
 		
 

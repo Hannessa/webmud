@@ -65,7 +65,9 @@ module.exports = {
 					name : "Starting Room",
 					desc : "Welcome to your first room in WebMUD. This is just an example of what can be created.",
 					tags : ["startLocation", "outside"],
-					coordinates : { x: 0, y: 0, z: 0 },
+					x: 0,
+					y: 0,
+					z: 0 ,
 				}
 			);
 			
@@ -273,6 +275,11 @@ module.exports = {
 	sendMessage : function (message, target, exclude) {
 		// Todo: Move "socket" to separate module, as to not depend on Sockets.IO and easily switch to others? Also add support for color codes in messages
 		
+		// If exclude is not an array, make it an array
+		if (exclude && !Array.isArray(exclude)) {
+			exclude = [exclude];
+		}
+
 		if (target.type == "character") {
 			// If target is character, only send message if we have a player connected to the character
 			var socket = this.getSocketFromCharacter(target);
@@ -291,7 +298,7 @@ module.exports = {
 				// Only send message if we have a character.
 				if (object.type == "character") {
 					// Only send if character is not equal to excluded variable, or is not contained in excluded variable (if it's an array).
-					if (!exclude || (exclude instanceof Object && object != exclude) || (exclude instanceof Array && exclude.indexOf(object) == -1)) {
+					if (!exclude || (exclude.indexOf(object) == -1)) {
 						this.sendMessage(message, object);
 					}
 				}

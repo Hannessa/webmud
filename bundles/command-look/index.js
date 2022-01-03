@@ -79,7 +79,9 @@ module.exports = {
 				if (room.exits.u) { validExits.push("Up"); }
 				if (room.exits.d) { validExits.push("Down"); }
 
-				output += '<div class="roomExits">Exits: ' + validExits.join(", ") + '</div>';
+				if (validExits.length) {
+					output += '<div class="roomExits">Exits: ' + validExits.join(", ") + '</div>';
+				}
 			}
 			
 			// Contents in room

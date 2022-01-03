@@ -1,5 +1,6 @@
 var config = require.main.require('./config.js');
 var server = require.main.require('./bundles/server.js');
+var world = server.bundles.world;
 
 module.exports = {
 	// Called when bundle is loaded
@@ -56,21 +57,33 @@ module.exports = {
 		var fromRoom = server.db.getEntity(character.location);
 		
 		if (fromRoom.exits && fromRoom.exits[direction]) {
-			socket.emit('output', { msg: "There's already a room in that direction." });
+			socket.emit('output', { msg: "There's already an exit in that direction." });
 			return;
 		}
 		
-		// TODO: Search for coordinates. If there's already a room at those coordinates, the just connect this to it.
+		// Find out new coordinates
+		var newX = fromRoom.x + coordinatesDelta[direction].x;
+		var newY = fromRoom.y + coordinatesDelta[direction].y;
+		var newZ = fromRoom.z + coordinatesDelta[direction].z;
+
+		// Search for coordinates. If there's already a room at those coordinates, the just connect this to it.
+		var toRoom = server.db.getEntity(character.location);
+		var rooms = server.db.queryEntities({ 'type' : 'room', x: newX, y: newY, z: newZ });
+		if (rooms.length > 0) {
+			toRoom = rooms[0];
+			socket.emit('output', { msg: "An exit has been created to an existing room in that direction." });
+			this.addExit(direction, fromRoom, toRoom);
+			return;
+		}
+
 		var toRoom = server.db.insertEntity({
 			type : "room",
 			name : argumentsSplit[1] ? argumentsSplit[1] : "New Room",
 			desc : "This is a new room.",
 			tags : [],
-			coordinates : {
-				x: fromRoom.coordinates.x + coordinatesDelta[direction].x,
-				y: fromRoom.coordinates.y + coordinatesDelta[direction].y,
-				z: fromRoom.coordinates.z + coordinatesDelta[direction].z
-			},
+			x: newX,
+			y: newY,
+			z: newZ,
 		});
 		
 		this.addExit(direction, fromRoom, toRoom);

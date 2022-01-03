@@ -89,6 +89,10 @@ module.exports = {
 		insert : function(type, data) {
 			return server.lokijsData[type].insert(data);
 		},
+
+		deleteEntity: function(object) {
+			return server.lokijsData["entities"].remove(object);
+		},
 		
 		insertEntity : function(data) {
 			return server.lokijsData["entities"].insert(data);
@@ -120,6 +124,10 @@ module.exports = {
 		
 		query : function(type, query) {
 			return server.lokijsData[type].find(query);
+		},
+
+		queryEntities : function(query) {
+			return server.lokijsData["entities"].find(query);
 		},
 
 		getId : function(object) {
