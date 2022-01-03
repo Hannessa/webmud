@@ -41,5 +41,10 @@ function msToHMS( ms ) {
     var minutes = parseInt( seconds / 60 ); // 60 seconds in 1 minute
     // 4- Keep only seconds not extracted to minutes:
     seconds = seconds % 60;
-    return hours+" hours, "+minutes+" minutes, "+ Math.round(seconds)+ " seconds";
+
+	// Extract days
+    var days = parseInt( hours / 24 );
+	hours = hours % 24;
+
+    return days + " days, "+hours+" hours, "+minutes+" minutes, "+ Math.round(seconds)+ " seconds";
 }
