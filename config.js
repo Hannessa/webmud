@@ -1,6 +1,6 @@
 module.exports = {
 
-	// Display name of MUD
+	// Name of MUD
 	name: 'WebMUD',
 
 	// Welcome message to be displayed when the user first connects to the MUD
@@ -15,10 +15,10 @@ module.exports = {
 	// What bundles to load (loaded in order from top to bottom)
 	"bundles" : [
 		"database-lokijs",
+		"world",
 		"welcome",
 		"login",
 		"character-creator",
-		"world",
 		"command-look",
 		"command-quit",
 		"commands-movement",
@@ -38,34 +38,57 @@ module.exports = {
 	"databaseSaveDelay" : 4000, // How often the database is saved, in milliseconds
 	"securityKey": "A8fS2jvx39Vmc7eS", // Should be unique for better password encryption
 			
+	"stats" : {
+		"strength" : "Strength of muscles, bones, tendons and skin. Also adds to natural armor.",
+		"agility" : "Movement speed, precision, balance and reaction time.",
+		"endurance" : "Stamina and energy levels. Also resistance to poison and disease.",
+		"intelligence" : "Cleverness and creativity. Ability to solve problems and come up with new ideas.",
+		"willpower" : "Ability to maintain focus. Also resistance to social persuasion and charm.",
+		"charisma" : "Social strength. Ability to get along with and influence others socially.",
+	},
 
 	"species": {
 		"human" : {
 			singular : "human",
 			plural : "humans",
-			shortDescription : "Humans are famous for their ",
-			longDescription : "Humans are famous for their ",
-			"stats" : {
-				"strength" : 10,
-				"dexterity" : 10,
-				"constitution" : 10,
-				"intelligence" : 10,
-				"wisdom" : 10,
-				"charisma" : 10
-			}
+			desc: "Humans are a social species often organized in large, complex societies. They are average in most stats and abilities.",
+			stats : {},
+			startingSkills: [],
+		},
+		"elf" : {
+			singular : "elf",
+			plural : "elves",
+			desc: "Elves normally live in forests with a close connection to nature. They are human-like in size, but more agile and less strong, with an exceptionally artistic and focused mind.",
+			stats : {},
+			startingSkills: [],
+		},
+		"dwarf": {
+			singular : "dwarf",
+			plural : "dwarves",
+			desc: "Dwarves live in vast halls carved into mountains. They are amazing architects, miners and craftsmen, smaller but sturdier than humans, with a strong and steadfast mind.",
+			stats : {},
+			startingSkills: [],
 		},
 		"gnome" : {
-			singular : "human",
-			plural : "humans",
-			description : "Humans are famous for their ",
-			"stats" : {
-				"strength" : 10,
-				"dexterity" : 10,
-				"constitution" : 10,
-				"intelligence" : 10,
-				"wisdom" : 10,
-				"charisma" : 10
-			}
+			singular : "gnome",
+			plural : "gnomes",
+			desc: "Gnomes are small, agile cave dwellers that live in underground cities close to rare minerals. They have a magical connection to the subterranean rocks and minerals and are skilled in the arts of mining, science and alchemy.",
+			stats : {},
+			startingSkills: [],
+		},
+		"fairy" : {
+			singular : "fairy",
+			plural : "faries",
+			desc: "Fairy are very small and delicate winged beings that live deep inside the largest forests in their own magical kingdoms. They are playful and have strong magical powers, but are also fragile and cannot fly very high.",
+			stats : {},
+			startingSkills: [],
+		},
+		"troll" : {
+			singular : "troll",
+			plural : "trolls",
+			desc: "Trolls are large, slow creatures that live in forests, caves and mountains. They are physically strong, but lack the intelligence of the other species.",
+			stats : {},
+			startingSkills: [],
 		},
 		
 	}
