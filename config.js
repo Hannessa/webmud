@@ -15,16 +15,17 @@ module.exports = {
 	// What bundles to load (loaded in order from top to bottom)
 	"bundles" : [
 		"database-lokijs",
-		"world",
 		"welcome",
 		"login",
 		"character-creator",
+		"world",
 		"command-look",
 		"command-quit",
 		"commands-movement",
 		"command-admin-set",
 		"command-admin-view",
 		"command-admin-dig",
+		"command-admin-delete",
 		"command-help",
 		"command-say",
 		"command-smile"
