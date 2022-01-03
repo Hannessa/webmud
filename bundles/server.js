@@ -4,15 +4,15 @@ var config = require.main.require('./config.js');
 module.exports = {
 	bundles: {},
 	
-	// Start socket server
+	// Load bundles and prepare welcome bundle
 	start: function(io) {
 		// Load bundles
 		this.loadBundles();
 		
 		// Listener for new connections to the socket server
 		io.on('connection', function (socket) {			
-			// As soon as we get a new connection, run the starting bundle
-			this.runBundle(config.startBundle, socket);
+			// When a user connects, run the welcome bundle
+			this.runBundle(config.welcomeBundle, socket);
 		}.bind(this));
 	},
 	

@@ -1,5 +1,5 @@
 var config = require.main.require('./config.js');
-var server = require.main.require('./utils/socket-server.js');
+var server = require.main.require('./bundles/server.js');
 var world = server.bundles.world;
 var db = server.db;
 

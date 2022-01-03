@@ -1,5 +1,5 @@
 var config = require.main.require('./config.js');
-var server = require.main.require('./utils/socket-server.js');
+var server = require.main.require('./bundles/server.js');
 
 // After logging in, this bundle is run to help you create and choose an in-game character to play with.
 module.exports = {
@@ -77,7 +77,7 @@ module.exports = {
 			
 		}.bind(this));
 	},
-	/*
+	
 	chooseSpecies : function (socket) {
 		socket.emit('output', { msg: "Choose your species:" });
 		socket.emit('output', { msg: "1) Human " });
@@ -92,7 +92,7 @@ module.exports = {
 			
 		}.bind(this));
 	},
-	*/
+	
 	
 	
 	

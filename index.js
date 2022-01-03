@@ -1,20 +1,23 @@
-// Setup basic express server
 var express = require('express');
-var app = express();
-var server = require('http').createServer(app);
-var io = require('socket.io')(server);
-var port = process.env.PORT || 3000;
 var path = require('path');
+var socketio = require('socket.io')
 var config = require.main.require('./config.js');
-var socketServer = require.main.require('./utils/socket-server.js');
+var bundleServer = require.main.require('./bundles/server.js');
 
-// Start HTTP-server
-server.listen(port, function () {
-	console.log('Server listening at port %d', port);
-});
+// Setup basic express server
+var app = express();
+var port = config.port;
 
-// Static file routing for HTTP-server using Express
+// Express middleware routing for static files
 app.use(express.static(path.join(__dirname, "public")));
 
-// Start socket server
-socketServer.start(io);
+// Start Express-server
+var server = app.listen(port, () => {
+	console.log('Server listening at port %d', port);
+})
+
+// Start socket.io server
+var io = socketio(server);
+
+// Start bundle server
+bundleServer.start(io);

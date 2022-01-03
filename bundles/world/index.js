@@ -1,5 +1,5 @@
 var config = require.main.require('./config.js');
-var server = require.main.require('./utils/socket-server.js');
+var server = require.main.require('./bundles/server.js');
 
 // After choosing a character, you're sent into the game world. This bundle also handles parsing of in-game commands, so should be loaded before any other commands bundles.
 module.exports = {	

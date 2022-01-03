@@ -1,5 +1,5 @@
 var config = require.main.require('./config.js');
-var server = require.main.require('./utils/socket-server.js');
+var server = require.main.require('./bundles/server.js');
 var bcrypt = require('bcrypt');
 
 // This bundle is called from the "welcome" bundle and gives step-by-step instructions for logging in or creating a new account.

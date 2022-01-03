@@ -1,5 +1,5 @@
 var config = require.main.require('./config.js');
-var server = require.main.require('./utils/socket-server.js');
+var server = require.main.require('./bundles/server.js');
 
 // Displays a welcome message to the user and then runs bundle "login". This is the default starting bundle that is run when a user first connects to the MUD.
 module.exports = {
@@ -12,14 +12,17 @@ module.exports = {
 	run : function (socket) {
 		var output = "";
 		
-		output += "Hello adventurer! Welcome to <strong>" + config.info.name + "</strong>.<br><br>";
-		output += "<strong>Server info</strong><br>";
-		output += "Active players: " + server.activePlayers + "<br>";
-		if (server.db.isLoaded) {
-			output += "World: " + server.db.getEntitiesByType('room').length + " rooms, " + server.db.getEntitiesByType('character').length + " characters, " + server.db.getEntitiesByType('object').length + " objects<br>";
+		output += config.welcomeMessage;
+
+		if (config.showServerInfo) {
+			output += "<br><br><strong>Server info</strong><br>";
+			output += "Logged in players: " + server.activePlayers + " of " + server.db.count('accounts') + "<br>";
+			if (server.db.isLoaded) {
+				output += "World: " + server.db.getEntitiesByType('room').length + " rooms, " + server.db.getEntitiesByType('character').length + " characters, " + server.db.getEntitiesByType('object').length + " objects<br>";
+			}
+			output += "Commands supported: " + server.commands.length + "<br>";
+			output += "Uptime: " + getDuration(this.serverStartTime, new Date()) + "<br>";
 		}
-		output += "Commands supported: " + server.commands.length + "<br>";
-		output += "Uptime: " + getDuration(this.serverStartTime, new Date()) + "<br>";
 
 		socket.emit('output', { msg: output });
 		

@@ -1,5 +1,5 @@
 var config = require.main.require('./config.js');
-var server = require.main.require('./utils/socket-server.js');
+var server = require.main.require('./bundles/server.js');
 var loki = require('lokijs');
 var fs = require('fs');
 
@@ -12,12 +12,18 @@ module.exports = {
 		
 		// Load database json-file at config.databasePath
 		server.lokijs = new loki(config.databasePath, {
-			autoload: true, // Load database now into memory
-			autoloadCallback: this.databaseInit.bind(this),
+			//autoload: true, // Load database now into memory
+			//autoloadCallback: this.databaseInit.bind(this),
+			serializationMethod: 'pretty',
 			//autosave: true, // Save database at predefined intervals
 			//autosaveInterval: config.databaseSaveDelay, // Save database every 4000 ms (4 seconds)
 			//saveCallback: function() { console.log('World saved.'); },
 		});
+
+		// Load database from file
+		server.lokijs.loadJSON(fs.readFileSync(config.databasePath));
+
+		this.databaseInit();
 	},
 	
 	// After database has been loaded or created, make preparations
@@ -115,6 +121,10 @@ module.exports = {
 		getId : function(object) {
 			return object.$loki;
 		},
+
+		//getRoomAtLocation(x, y, z) {
+		//	server.db.query('entities', {'x': x,  } );
+		//}
 	
 	}
 }
