@@ -6,10 +6,10 @@
   "license": "MIT",
   "dependencies": {
     "bcrypt": "^5.0.1",
-    "express": "^4.15.3",
-    "lokijs": "^1.5.0",
-    "nodemon": "^1.11.0",
-    "socket.io": "^2.0.3"
+    "express": "^4.17.2",
+    "lokijs": "^1.5.12",
+    "nodemon": "^2.0.15",
+    "socket.io": "^4.4.0"
   },
   "scripts": {
     "start": "nodemon index.js --ignore database.json --ignore database.json.bak"
