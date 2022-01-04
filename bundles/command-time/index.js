@@ -8,7 +8,7 @@ module.exports = {
 	init : function () {
 		var command = {};
 		
-		command["keywords"] = ["time", "t"];
+		command["keywords"] = ["time", "t", "date"];
 		command["run"] = this.runCommand.bind(this);
 		command["helpCategory"] = "Environment";
 		command["helpSyntax"] = ["time",];		
@@ -50,15 +50,15 @@ module.exports = {
 			db.global.time.hour = 0;
 			db.global.time.day++;
 		}
-		if (db.global.time.day >= 7) {
+		if (db.global.time.day > 7) {
 			db.global.time.day = 1;
 			db.global.time.week++;
 		}
-		if (db.global.time.week >= 4) {
+		if (db.global.time.week > 4) {
 			db.global.time.week = 1;
 			db.global.time.month++;
 		}
-		if (db.global.time.month >= 12) {
+		if (db.global.time.month > 12) {
 			db.global.time.month = 1;
 			db.global.time.year++;
 		}
@@ -188,7 +188,24 @@ module.exports = {
 			7: "Sunday"
 		}
 
-		message += `<br>${days[db.global.time.day]}, Week ${db.global.time.week}, Month ${db.global.time.month}, Year ${config.startingYear + db.global.time.year-1}, Year of the ${config.yearNames[(db.global.time.year-1)%config.yearNames.length]}<br>`
+		var months = {
+			1: "January",
+			2: "February",
+			3: "March",
+			4: "April",
+			5: "May",
+			6: "June",
+			7: "July",
+			8: "August",
+			9: "September",
+			10: "October",
+			11: "November",
+			12: "December"
+		}
+
+
+		//message = `You look up at the sky...<br>${message}`;
+		message += `<br>${days[db.global.time.day]}, ${months[db.global.time.month]} ${db.global.time.day + (db.global.time.week-1)*7}, Year ${config.startingYear + db.global.time.year-1} - Year of the ${config.yearNames[(db.global.time.year-1)%config.yearNames.length]}<br>`
 
 		world.sendMessage(message, character);
 	},
