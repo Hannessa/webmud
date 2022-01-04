@@ -188,7 +188,7 @@ module.exports = {
 			7: "Sunday"
 		}
 
-		message += `<br>${days[db.global.time.day]}, Week ${db.global.time.week}, Month ${db.global.time.month}, Year ${db.global.time.year}<br>`
+		message += `<br>${days[db.global.time.day]}, Week ${db.global.time.week}, Month ${db.global.time.month}, Year ${config.startingYear + db.global.time.year-1}, Year of the ${config.yearNames[(db.global.time.year-1)%config.yearNames.length]}<br>`
 
 		world.sendMessage(message, character);
 	},

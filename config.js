@@ -14,6 +14,8 @@ module.exports = {
 
 	// Date and time in world
 	timeUpdateRate: 2500, // In milliseconds, how fast one game minute passes. 2.5 sec means one hour is 2.5 minutes, a day is 60 minutes
+	startingYear: 4291, // Year the game starts in
+	yearNames: ['Three-Headed Monkey', 'Seven Moons', 'Dolphin', 'Three Suns', 'Goat', 'Happy Farmer', 'Worm', 'Lute', 'Snake', 'Elephant King', 'Leopard God', 'Pig',],
 
 	// What bundles to load (loaded in order from top to bottom)
 	"bundles" : [
