@@ -54,6 +54,18 @@ module.exports = {
 		// Run "look" command to look at the room we're standing in
 		this.runCommand("look", socket.character);
 	},
+
+	getActivePlayers : function() {
+		return server.characterToPlayer;
+	},
+
+	getActivePlayerCharacters : function() {
+		var characters = [];
+		for (var i in server.characterToPlayer) {
+			characters.push(server.characterToPlayer[i].character);
+		}
+		return characters;
+	},
 	
 	prepareDatabase : function() {
 		var numRooms = server.db.getEntitiesByType("room").length;

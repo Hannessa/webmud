@@ -12,6 +12,9 @@ module.exports = {
 	// Port of web server
 	port: 3000,
 
+	// Date and time in world
+	timeUpdateRate: 2500, // In milliseconds, how fast one game minute passes. 2.5 sec means one hour is 2.5 minutes, a day is 60 minutes
+
 	// What bundles to load (loaded in order from top to bottom)
 	"bundles" : [
 		"database-lokijs",
@@ -28,7 +31,8 @@ module.exports = {
 		"command-admin-delete",
 		"command-help",
 		"command-say",
-		"command-smile"
+		"command-smile",
+		"command-time",
 	],
 
 	// What bundle to run when a user first connection

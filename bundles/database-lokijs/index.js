@@ -28,7 +28,11 @@ module.exports = {
 	databaseInit : function () {
 		// Attempt to load database file into loki
 		if (fs.existsSync(config.databasePath)) {
-			server.lokijs.loadJSON(fs.readFileSync(config.databasePath));
+			// Make sure global variables are preserved by setting it after load
+			var json = JSON.parse(fs.readFileSync(config.databasePath))
+			var global = json.global
+			server.lokijs.loadJSONObject(json);
+			server.lokijs.global = global
 		}
 
 		if (server.lokijs.getCollection("accounts") == null) {
@@ -67,6 +71,12 @@ module.exports = {
 		}
 		
 		server.db.isLoaded = true;
+
+		// Setup global scope
+		if (!server.lokijs.global) {
+			server.lokijs.global = {};
+		}
+		server.db.global = server.lokijs.global;
 
 		// Setup autosave at regular intervals
 		setInterval(() => {
