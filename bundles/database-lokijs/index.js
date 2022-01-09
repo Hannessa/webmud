@@ -80,11 +80,13 @@ module.exports = {
 
 		// Setup autosave at regular intervals
 		setInterval(() => {
-			// First save old file backup
-			fs.createReadStream(config.databasePath).pipe(fs.createWriteStream(config.databasePath + '.bak').on("close", function() {
-				// Backup file saved successful, so save database
+			// Save old file as backup, then save database
+			try {
+				fs.copyFileSync(config.databasePath, config.databasePath + '.bak')
 				server.lokijs.saveDatabase();
-			}));
+			} catch (err) {
+		  		console.error(err)
+			}
 		}, config.databaseSaveDelay);
 	},
 	
