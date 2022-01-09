@@ -35,6 +35,7 @@ module.exports = {
 		"command-say",
 		"command-smile",
 		"command-time",
+		"command-inventory",
 	],
 
 	// What bundle to run when a user first connection
