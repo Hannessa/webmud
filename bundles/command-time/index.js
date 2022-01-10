@@ -10,7 +10,7 @@ module.exports = {
 		
 		command["keywords"] = ["time", "t", "date"];
 		command["run"] = this.runCommand.bind(this);
-		command["helpCategory"] = "Environment";
+		command["helpCategory"] = "Exploration";
 		command["helpSyntax"] = ["time",];		
 		command["helpText"] = "Look at the sky to determine time of day.";		
 		

@@ -10,7 +10,7 @@ module.exports = {
 		
 		command["keywords"] = ["drop",];
 		command["run"] = this.runCommand;
-		command["helpCategory"] = "Exploration";
+		command["helpCategory"] = "Interaction";
 		command["helpSyntax"] = ["drop <object>"];		
 		command["helpText"] = "Drop <object> from your inventory into the current room.";		
 		

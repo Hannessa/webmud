@@ -24,19 +24,30 @@ module.exports = {
 		// "help" without argument. Display all available commands. 
 		if (arguments == "") {
 			// Todo: Also display and sort by categories!
-			var category = "";
+			var categories = [];
 			var commandList = {};
 			var commandOrder = [];
+			var commandsByCategory = {};
 			for (var i = 0; i < server.commands.length; i++) {
 				var command = server.commands[i];
 				commandList[command.keywords[0]] = command;
 				commandOrder.push(command.keywords[0]);
+				if (command.helpCategory && categories.indexOf(command.helpCategory) == -1) {
+					categories.push(command.helpCategory);
+				}
+
+				if (!commandsByCategory[command.helpCategory]) {
+					commandsByCategory[command.helpCategory] = [];
+				}
+				commandsByCategory[command.helpCategory].push(command.keywords[0]);
+				commandsByCategory[command.helpCategory].sort()
 			}
 			commandOrder.sort();
+			categories.sort();
 			
 			
-			var content = "<strong>Available commands</strong><br>";
-			for (var i = 0; i < commandOrder.length; i++) {
+			var content = "<strong>Available commands</strong><br>Type \"help &lt;command&gt;\" for additional information.<br><br>";
+			/*for (var i = 0; i < commandOrder.length; i++) {
 				var commandName = commandOrder[i];
 				var command = commandList[commandName];
 				
@@ -50,7 +61,20 @@ module.exports = {
 				
 				content += commandName + " - " + this.htmlEntities(truncatedDesc) + "<br>";
 
+			}*/
+
+			for (var i = 0; i < categories.length; i++) {
+				var category = categories[i];
+				content += "<strong>" + category + "</strong> - ";
+				content += commandsByCategory[category].join(", ");
+				content += "<br>";
 			}
+				/*for (var j = 0; j < commandsByCategory[category].length; j++) {
+					var commandName = commandsByCategory[category][j];
+					var command = commandList[commandName];
+					content += commandName + " - " + this.htmlEntities(truncatedDesc) + "<br>";*/
+
+
 			socket.emit('output', { msg: content });
 		}
 		// "help <command>" with argument. Display info about a specific command.
