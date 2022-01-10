@@ -23,11 +23,11 @@ module.exports = {
 		
 		// Make arguments case insensitive
 		arguments = arguments.toLowerCase();
-		
+
+		var room = server.db.getEntity(socket.character.location);
+
 		// "Look". No arguments (i.e. "look" or "look room"), so view current room
 		if (arguments == "" || arguments == "room") {
-			var room = server.db.getEntity(socket.character.location);
-			
 			if (!room) {
 				world.sendMessage('You are floating in empty space. There is no room to look at.', character);
 				return;
@@ -121,29 +121,38 @@ module.exports = {
 		}
 		// "Look <object>". Examine a specific object
 		else if (arguments) {
-			// Try to find target object
-			var object = server.bundles.world.findTargetObject(arguments, character);
+			// Try to find target object in room
+			var object = server.bundles.world.findTargetInObject(arguments, room);
 
-			if (object) {
-				// We found an object!
-				if (object.type == "character") {
-					// Character
-					socket.emit('output', { msg: '<span class="characterTitle">' + object.name + '</span>' });
-					if (object.desc) {
-						socket.emit('output', { msg: '<span class="characterDesc">' + object.desc + '</span>' });
-					}
-				} else {
-					// Object
-					socket.emit('output', { msg: '<span class="objectTitle">' + object.name + '</span>' });
-					if (object.desc) {
-						socket.emit('output', { msg: '<span class="objectDesc">' + object.desc + '</span>' });
-					}
-				}
+			// Try to find target object in inventory
+			if (!object) {
+				var object = server.bundles.world.findTargetInObject(arguments, character);
 			}
-			else {
-				// No object found
-				socket.emit('output', { msg: 'There is no object called "' + arguments + '" nearby.' });
+
+			// If we're looking at self
+			if (arguments == "self") {
+				object = character;
 			}
+
+			if (!object) {
+				world.sendMessage('You do not see that here.', character);
+				//world.sendMessage('There is nothing called "' + arguments + '" nearby.', character);
+				return;
+			}
+
+			// We found an object!
+			var message = "<div class='" + object.type + "'>";
+			message += "<span class='name'>" + object.name + "</span><br><br>";
+
+			if (object.desc) {
+				message += "<span class='desc'>" + object.desc + "</span><br><br>";
+			}
+
+			if (object.weight) {
+				message += "<span class='weight'>Weight: " + object.weight + "</span><br><br>";
+			}
+
+			world.sendMessage(message, character);
 		}
 	},
 }

@@ -244,6 +244,23 @@ module.exports = {
 		
 		// TODO: Try to find object in inventory
 	},
+
+	findTargetInObject : function (target, parent) {
+		if (parent.contents) {
+			for (var i = 0; i < parent.contents.length; i++) {
+				var objectId = parent.contents[i];
+				var object = server.db.getEntity(objectId);
+				
+				// If object name contains target string, consider it a match and return it as target object
+				// TODO: Change to match only each word in name (split by space), and only from start of string.
+				if (object.name.toLowerCase().indexOf(target) > -1) {
+					return object;
+				}
+			}
+		}
+		return null
+	},
+
 	
 	// Method for returning gender words for a character. Using male as base to get difference between "his"/"him". (Potential problem: missing difference between "her" and "hers"?)
 	getGenderWords : function (character) {

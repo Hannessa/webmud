@@ -31,11 +31,14 @@ module.exports = {
 		"command-admin-view",
 		"command-admin-dig",
 		"command-admin-delete",
+		"command-admin-create",
 		"command-help",
 		"command-say",
 		"command-smile",
 		"command-time",
 		"command-inventory",
+		"command-get",
+		"command-drop",
 	],
 
 	// What bundle to run when a user first connection

@@ -19,7 +19,7 @@ module.exports = {
 	
 	runCommand : function (args, character, socket) {
 		// Contents in room
-		if (!character.contents) {
+		if (!character.contents || character.contents.length == 0) {
 			world.sendMessage('You are carrying nothing.', character);
 			return;
 		}
@@ -29,7 +29,7 @@ module.exports = {
 		var contentsWeight = 0;
 		var output = "";
 		for (var i = 0; i < character.contents.length; i++) {
-			var objectId = room.contents[i];
+			var objectId = character.contents[i];
 			var object = server.db.getEntity(objectId);
 			var weight = 0;
 			if (object.weight) {
@@ -55,6 +55,8 @@ module.exports = {
 			output += "You are carrying " + contentsWeight + " kg:<br><br>";
 		}
 		output += contents.join("<br>");
+
+		world.sendMessage(output, character);
 
 	},
 }
