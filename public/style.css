@@ -53,5 +53,7 @@ body {
 }
 
 .messages {
-  height: 90vh;
+  /*height: 90vh;*/
+  margin-left: 12px;
+  margin-right: 12px;
 }

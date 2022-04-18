@@ -1,3 +1,4 @@
+const chalk = require("chalk");
 var config = require.main.require('./config.js');
 var server = require.main.require('./bundles/server.js');
 
@@ -49,7 +50,7 @@ module.exports = {
 			this.moveObject(socket.character, startRoom);
 		};
 		
-		socket.emit('output', { msg: "Logged into bot <strong>" + socket.character.name + "</strong>.<br><br>" });
+		socket.emit('output', { msg: "Logged into bot " + chalk.bold(socket.character.name) + ".\n\n" });
 
 		// Run "look" command to look at the room we're standing in
 		this.runCommand("status", socket.character);
@@ -184,7 +185,7 @@ module.exports = {
 		}
 		
 		if (!hasMatch && socket) {
-			socket.emit('output', { msg: "That's not a valid command. Type 'help' for a list of commands." });
+			socket.emit('output', { msg: "That's not a valid command. Type " + chalk.bgWhite("help") + " for a list of commands." });
 		}
 	},
 	

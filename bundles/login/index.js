@@ -1,3 +1,4 @@
+const chalk = require("chalk");
 var config = require.main.require('./config.js');
 var server = require.main.require('./bundles/server.js');
 var bcrypt = require('bcrypt');
@@ -37,7 +38,7 @@ module.exports = {
 		}
 		else {
 			// Account doesn't exist, so create a new one.
-			socket.emit('output', { msg: "Are you sure this is the right e-mail: <strong>" + email + "</strong>?<br>Type 'yes' or 'no'" });
+			socket.emit('output', { msg: "Are you sure this is the right e-mail: " + chalk.bgBlue(email) + "?\nType " + chalk.bgWhite('yes') + " or " + chalk.bgWhite('no') });
 			
 			socket.once('input', function (data) {
 				if (/^y(es)?$/i.test(data.msg)) {
@@ -64,7 +65,7 @@ module.exports = {
 				server.runBundle("character-creator", socket); // Run the character creator
 			} else {
 				// The password was incorrect
-				socket.emit('output', { msg: "Wrong password." });
+				socket.emit('output', { msg: chalk.red("Wrong password.") });
 				this.enterEmail(socket);
 			}
 		}.bind(this));
@@ -84,7 +85,7 @@ module.exports = {
 				if (server.db.count('accounts') == 0) {
 					// First account, so set role to superuser.
 					role = "superuser";
-					socket.emit('output', { msg: "First account on server, so has been set to Superuser." });
+					socket.emit('output', { msg: "First account on server, so has been set to " + chalk.underline("Superuser") + "." });
 				}
 
 				// Save user with encrypted password

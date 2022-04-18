@@ -9,12 +9,17 @@ $(function() {
   ];
 
   var $messages = $('.messages');
-  var term = new Terminal();
-  var termFitAddon = new FitAddon.FitAddon();
-  term.loadAddon(termFitAddon);
+  var term = new Terminal({
+    convertEol: true,
+    rows: 40
+  });
+  //var termFitAddon = new FitAddon.FitAddon();
+  //term.loadAddon(termFitAddon);
   term.open($messages[0]);
-  termFitAddon.fit();
+  //termFitAddon.fit();
+  
   //term.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ')
+  term.write("\n");
 
   // Initialize variables
   var $window = $(window);
@@ -74,14 +79,14 @@ $(function() {
           // Password entered
           addChatMessage({
               //username: username,
-              msg: '&gt; *******'
+              msg: '> *******'
               //msg: '<div style="margin-top: 5px;"></div>'
             });
         } else {
           // Normal command
           addChatMessage({
             //username: username,
-            msg: '&gt; ' + message
+            msg: '> ' + message
             //msg: '<div style="margin-top: 5px;"></div>'
           });
         }
@@ -95,12 +100,12 @@ $(function() {
 
   // Log a message
   function log (message, options) {
-    term.write('log: ' + message)
+    term.write('System message: ' + message + "\n\n")
   }
 
   // Adds the visual chat message to the message list
   function addChatMessage (data, options) {
-    term.write(data.msg)
+    term.write(data.msg + "\n")
   }
 
   // Adds the visual chat typing message
@@ -201,7 +206,7 @@ $(function() {
   // Whenever the server emits 'new message', update the chat body
   socket.on('output', function (data) {
     connected = true;
-	  data.msg = "<div>" + data.msg + "</div><br>";
+	  data.msg = data.msg + "\n";
 
     // If we expect password in return
     if (data.password) {

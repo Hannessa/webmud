@@ -1,3 +1,4 @@
+const chalk = require("chalk");
 var config = require.main.require('./config.js');
 var server = require.main.require('./bundles/server.js');
 
@@ -15,13 +16,13 @@ module.exports = {
 		output += config.welcomeMessage;
 
 		if (config.showServerInfo) {
-			output += "<br><br><strong>Server info</strong><br>";
-			output += "Logged in workers: " + server.activePlayers + " of " + server.db.count('accounts') + "<br>";
+			output += "\n\n" + chalk.bold("Server info") + "\n";
+			output += "Logged in workers: " + server.activePlayers + " of " + server.db.count('accounts') + "\n";
 			if (server.db.isLoaded) {
-				output += "BotNet: " + server.db.getEntitiesByType('room').length + " locations, " + server.db.getEntitiesByType('character').length + " bots, " + server.db.getEntitiesByType('object').length + " discoveries<br>";
+				output += "BotNet: " + server.db.getEntitiesByType('room').length + " locations, " + server.db.getEntitiesByType('character').length + " bots, " + server.db.getEntitiesByType('object').length + " discoveries\n";
 			}
-			output += "Commands supported: " + server.commands.length + "<br>";
-			output += "Uptime: " + getDuration(this.serverStartTime, new Date()) + "<br>";
+			output += "Commands supported: " + server.commands.length + "\n";
+			output += "Uptime: " + getDuration(this.serverStartTime, new Date()) + "\n";
 		}
 
 		socket.emit('output', { msg: output });

@@ -1,3 +1,4 @@
+const chalk = require("chalk");
 var config = require.main.require('./config.js');
 var server = require.main.require('./bundles/server.js');
 
@@ -46,7 +47,7 @@ module.exports = {
 			categories.sort();
 			
 			
-			var content = "<strong>Available commands</strong><br>Type \"help &lt;command&gt;\" for additional information.<br><br>";
+			var content = chalk.bold("Available commands") + "\nType \"help <command>\" for additional information.\n\n";
 			/*for (var i = 0; i < commandOrder.length; i++) {
 				var commandName = commandOrder[i];
 				var command = commandList[commandName];
@@ -65,9 +66,9 @@ module.exports = {
 
 			for (var i = 0; i < categories.length; i++) {
 				var category = categories[i];
-				content += "<strong>" + category + "</strong> - ";
+				content += chalk.bold(category) + " - ";
 				content += commandsByCategory[category].join(", ");
-				content += "<br>";
+				content += "\n";
 			}
 				/*for (var j = 0; j < commandsByCategory[category].length; j++) {
 					var commandName = commandsByCategory[category][j];
@@ -100,21 +101,17 @@ module.exports = {
 			
 			// Display command information
 			var content = "";
-			content += "<strong>" + command.keywords[0] + "</strong><br>";
+			content += chalk.bold(command.keywords[0]) + "\n";
 			if (command.keywords[1]) {
-				content += "Aliases: " + command.keywords.join(", ") + "<br>";
+				content += "Aliases: " + command.keywords.join(", ") + "\n";
 			}
-			content += "Category: " + command.helpCategory + "<br>";
-			content += "Syntax: " + this.htmlEntities(command.helpSyntax.join(", ")) + "<br>";
+			content += "Category: " + command.helpCategory + "\n";
+			content += "Syntax: " + command.helpSyntax.join(", ") + "\n";
 			if (command.helpExample) {
-				content += "Example use: " + this.htmlEntities(command.helpExample.join(", ")) + "<br>";
+				content += "Example use: " + command.helpExample.join(", ") + "\n";
 			}
-			content += "<br>" + this.htmlEntities(command.helpText) + "<br>";
+			content += "\n" + command.helpText + "\n";
 			socket.emit('output', { msg: content });
 		}
-	},
-	
-	htmlEntities : function(str) {
-		return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 	}
 }

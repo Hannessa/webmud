@@ -1,10 +1,13 @@
+const chalk = require("chalk");
+
 module.exports = {
 
 	// Name of MUD
 	name: 'RSB',
 
 	// Welcome message to be displayed when the user first connects to the MUD
-	welcomeMessage: "You have logged into the <strong>Remote SpaceBot</strong> controller tool.",
+	welcomeMessage: chalk.yellow("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n\n")
+		+ "You have logged into the " + chalk.cyan("Remote SpaceBot") + " controller tool.",
 
 	// If true, will show general server info on welcome screen
 	showServerInfo: true,
