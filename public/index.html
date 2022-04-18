@@ -2,35 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>WebMUD Client</title>
+  <title>RSB Game</title>
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css?family=Artifika" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css?family=EB+Garamond" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css?family=Lora" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css?family=Spectral" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css?family=Spectral:200" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css?family=Alegreya" rel="stylesheet">
 
-
-
+  <link rel="stylesheet" href="/xterm.css" />
+  <script src="/xterm.js"></script>
+  <script src="/xterm-addon-fit.js"></script>
 </head>
 <body>
-  <ul class="pages">
-    <li class="chat page">
-      <div class="chatArea">
-        <ul class="messages"><li class="messages_marker">&gt;</li></ul>
-      </div>
-      <input class="inputMessage" placeholder="Type here..."/>
-    </li>
-    <!--<li class="login page">
-      <div class="form">
-        <h3 class="title">What's your nickname?</h3>
-        <input class="usernameInput" type="text" maxlength="14" />
-      </div>
-    </li>-->
-  </ul>
+  <div class="content">
+    <div class="messages"></div>
+  </div>
+  <input class="inputMessage" placeholder="Type here..."/>
 
   <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>

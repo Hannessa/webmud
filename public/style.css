@@ -4,157 +4,37 @@
   box-sizing: border-box;
 }
 
-html {
-  font-weight: 300;
-  /*-webkit-font-smoothing: antialiased;*/
-}
-
-html, input {
-  /*font-family: serif;
-  font-size: 20px;*/
-  /*font-family: Lora;
-  font-size: 17px;
-  line-height: 1.5em;*/
-  
-  /*font-family: "EB Garamond";
-  font-size: 18px;
-  line-height: 1.3em;*/
-  /*font-family: Lato;
-  font-size: 16px;*/
-  
-  font-family: Spectral;
+input {
+  font-family: monospace;
   font-size: 18px;
   line-height: 1.3em;
   font-weight: 200;
-  
-  /*font-family: Alegreya;*/
-  
-  background-color: #181818; /* #222 */
-  color: #fff; /* #eee */ 
+  background-color: #181818;
+  color: #fff;
 }
 
 strong {
 	font-weight: bold;
 }
 
-html, body {
+body {
   height: 100%;
   margin: 0;
   padding: 0;
+  background-color: #181818;
 }
 
-ul {
-  list-style: none;
-  word-wrap: break-word;
-}
-
-/* Pages */
-
-.pages {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  max-width: 900px;
+.content {
+  max-width: 800px;
   margin: auto;
-}
-
-.page {
-	top: 50px;
-  height: 80%;
-  position: absolute;
-  width: 900px;
-}
-
-/* Login Page */
-
-.login.page {
-  background-color: #000;
-}
-
-.login.page .form {
-  height: 100px;
-  margin-top: -100px;
-  position: absolute;
-
-  text-align: center;
-  top: 50%;
-  width: 100%;
-}
-
-.login.page .form .usernameInput {
-  background-color: transparent;
-  border: none;
-  border-bottom: 2px solid #fff;
-  outline: none;
-  padding-bottom: 15px;
-  text-align: center;
-  width: 400px;
-}
-
-.login.page .title {
-  font-size: 200%;
-}
-
-.login.page .usernameInput {
-  font-size: 200%;
-  letter-spacing: 3px;
-}
-
-.login.page .title, .login.page .usernameInput {
-  color: #fff;
-  font-weight: 100;
-}
-
-/* Chat page */
-
-.chat.page {
-  /*display: none;*/
-}
-
-/* Font */
-
-.messages {
-  font-size: 100%;
+  background-color: #000000;
 }
 
 .inputMessage {
   font-size: 100%;
+  max-width: 800px;
+  margin: auto;
 }
-
-.log {
-  color: gray;
-  font-size: 100%;
-  margin: 15px;
-  text-align: center;
-}
-
-/* Messages */
-
-.chatArea {
-  height: 100%;
-  padding-bottom: 60px;
-  
-}
-
-.messages {
-  height: 100%;
-  margin: 0;
-  overflow-y: scroll;
-  padding: 20px 20px 30px 20px;
-}
-
-.message.typing .messageBody {
-  color: gray;
-}
-
-.username {
-  font-weight: 700;
-  overflow: hidden;
-  padding-right: 15px;
-  text-align: right;
-}
-
-/* Input */
 
 .inputMessage {
   /*border: 10px solid #000;*/
@@ -172,35 +52,6 @@ ul {
   width: 100%;
 }
 
-::-webkit-scrollbar
-{
-  width: 12px;  /* for vertical scrollbars */
-  height: 12px; /* for horizontal scrollbars */
-}
-
-::-webkit-scrollbar-track
-{
-  background: rgba(255, 255, 255, 0);
-}
-
-::-webkit-scrollbar-thumb
-{
-  background: rgba(255, 255, 255, 0.3);
-}
-
-.roomTitle {
-	font-weight: bold;
-	color: cyan;
-}
-
-.roomExits {
-	color: #AAAA00;
-}
-
-.roomDesc {
-}
-
-.selections, .indent {
-	padding-top: 10px;
-	padding-left: 20px;
+.messages {
+  height: 90vh;
 }

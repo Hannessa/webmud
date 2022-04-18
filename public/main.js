@@ -8,10 +8,17 @@ $(function() {
     '#3b88eb', '#3824aa', '#a700ff', '#d300e7'
   ];
 
+  var $messages = $('.messages');
+  var term = new Terminal();
+  var termFitAddon = new FitAddon.FitAddon();
+  term.loadAddon(termFitAddon);
+  term.open($messages[0]);
+  termFitAddon.fit();
+  //term.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ')
+
   // Initialize variables
   var $window = $(window);
   var $usernameInput = $('.usernameInput'); // Input for username
-  var $messages = $('.messages'); // Messages area
   var $inputMessage = $('.inputMessage'); // Input message input box
 
   var $loginPage = $('.login.page'); // The login page
@@ -88,30 +95,12 @@ $(function() {
 
   // Log a message
   function log (message, options) {
-    var $el = $('<li>').addClass('log').text(message);
-    addMessageElement($el, options);
+    term.write('log: ' + message)
   }
 
   // Adds the visual chat message to the message list
   function addChatMessage (data, options) {
-    // Don't fade the message in if there is an 'X was typing'
-    /*var $typingMessages = getTypingMessages(data);
-    options = options || {};
-    if ($typingMessages.length !== 0) {
-      options.fade = false;
-      $typingMessages.remove();
-    }*/
-
-   /*var $usernameDiv = $('<span class="username"/>')
-      .text(data.username)
-      .css('color', getUsernameColor(data.username));*/
-    var $messageBodyDiv = $('<span class="messageBody">')
-      .html(data.msg);
-
-    //var typingClass = data.typing ? 'typing' : '';
-    var $messageDiv = $('<li class="message"/>').append($messageBodyDiv);
-
-    addMessageElement($messageDiv, options);
+    term.write(data.msg)
   }
 
   // Adds the visual chat typing message
@@ -126,39 +115,6 @@ $(function() {
     getTypingMessages(data).fadeOut(function () {
       $(this).remove();
     });
-  }
-
-  // Adds a message element to the messages and scrolls to the bottom
-  // el - The element to add as a message
-  // options.fade - If the element should fade-in (default = true)
-  // options.prepend - If the element should prepend
-  //   all other messages (default = false)
-  function addMessageElement (el, options) {
-    var $el = $(el);
-
-    // Setup default options
-    if (!options) {
-      options = {};
-    }
-    if (typeof options.fade === 'undefined') {
-      options.fade = true;
-    }
-    if (typeof options.prepend === 'undefined') {
-      options.prepend = false;
-    }
-
-    // Apply options
-    if (options.fade) {
-      $el.hide().fadeIn(FADE_TIME);
-    }
-    if (options.prepend) {
-      $messages.prepend($el);
-	  //$('.messages_marker').before($el);
-    } else {
-		$('.messages_marker').before($el);
-      //$messages.append($el);
-    }
-    $messages[0].scrollTop = $messages[0].scrollHeight;
   }
 
   // Prevents input from having injected markup
