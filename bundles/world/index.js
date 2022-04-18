@@ -49,10 +49,10 @@ module.exports = {
 			this.moveObject(socket.character, startRoom);
 		};
 		
-		socket.emit('output', { msg: "Logged into the world as <strong>" + socket.character.name + "</strong>.<br><br>" });
+		socket.emit('output', { msg: "Logged into bot <strong>" + socket.character.name + "</strong>.<br><br>" });
 
 		// Run "look" command to look at the room we're standing in
-		this.runCommand("look", socket.character);
+		this.runCommand("status", socket.character);
 	},
 
 	getActivePlayers : function() {

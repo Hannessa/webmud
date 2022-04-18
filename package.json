@@ -9,7 +9,8 @@
     "express": "^4.17.2",
     "lokijs": "^1.5.12",
     "nodemon": "^2.0.15",
-    "socket.io": "^4.4.0"
+    "socket.io": "^4.4.0",
+    "uuid": "^8.3.2"
   },
   "scripts": {
     "start": "nodemon index.js --ignore database.json --ignore database.json.bak"

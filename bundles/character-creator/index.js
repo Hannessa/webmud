@@ -1,5 +1,6 @@
 var config = require.main.require('./config.js');
 var server = require.main.require('./bundles/server.js');
+var uuidv4 = require('uuid').v4;
 
 // After logging in, this bundle is run to help you create and choose an in-game character to play with.
 module.exports = {
@@ -19,12 +20,12 @@ module.exports = {
 			socket.account.characters = [];
 		}
 		
-		var output = "<div>Choose character (enter number):</div>";
+		var output = "<div>Choose bot (enter number):</div>";
 		
 		output += '<div class="selections">';
 		
 		// Also show option for creating new character
-		output += "0) [Create new character]<br>"
+		output += "0) [Register new bot]<br>"
 		
 		// List all characters on this account as 1) <character name>, 2) <character name> etc
 		for (var i = 0; i < socket.account.characters.length; i++) {
@@ -58,47 +59,78 @@ module.exports = {
 	
 	// Create a new character
 	createCharacter : function (socket) {
-		socket.emit('output', { msg: "Name your character:" });
+		var name = this.botNamesFirst[Math.floor(Math.random() * this.botNamesFirst.length)]
+			+ ' ' + this.botNamesSecond[Math.floor(Math.random() * this.botNamesSecond.length)];
+		var uuid = uuidv4()
+		socket.emit('output', { msg: "You have been assigned bot: " + name + ' / ' + uuid });
 		
-		socket.once('input', function (data) {
-			var character = server.db.insertEntity({
-				name : data.msg,
-				type : "character",
-				species : "human",
-				age : 25,
-				playerCharacter : true,
-				
-			});
+		var character = server.db.insertEntity({
+			name : name,
+			uuid : uuid,
+			type : "og-bot",
+			level : 1,
+			playerCharacter : true,
 			
-			socket.account.characters.push(server.db.getId(character));
-			
-			//this.chooseSpecies(socket, character);
-			this.chooseCharacter(socket);
-			
-		}.bind(this));
-	},
-	
-	chooseSpecies : function (socket) {
-		socket.emit('output', { msg: "Choose your species:" });
-		socket.emit('output', { msg: "1) Human " });
+		});
 		
-		socket.once('input', function (data) {
-			var character = {
-				name : data.msg,
-			}
-			
-			this.chooseSpecies(socket, character);
-			
-			
-		}.bind(this));
+		socket.account.characters.push(server.db.getId(character));
+		
+		this.chooseCharacter(socket);
 	},
-	
-	
-	
 	
 	loginWithCharacter : function (socket, character) {		
 		socket.character = character;
 		
 		server.runBundle("world", socket);
-	}
+	},
+
+	"botNamesFirst": [
+		"Scan",
+		"Displace",
+		"Reduction",
+		"Ridge",
+		"Soap",
+		"Stab",
+		"Dull",
+		"Polish",
+		"Dash",
+		"Remain",
+		"Light",
+		"Squash",
+		"Cherry",
+		"Rational",
+		"Mystery",
+		"Tough",
+		"Glare",
+		"Denial",
+		"Jest",
+		"Polite",
+		"Spite",
+		"Complex",
+		"Raw",
+		"Fast",
+		"Spy",
+		"Distant",
+		"Lawful",
+		"Techno",
+		"Neon"
+	],
+
+	"botNamesSecond": [
+		"Sun",
+		"Hiccup",
+		"Carrot",
+		"Motor",
+		"Cave",
+		"Pig",
+		"Ant",
+		"Rise",
+		"Hold",
+		"Spectrum",
+		"Wing",
+		"Stitch",
+		"Score",
+		"Clone",
+		"Deed"
+	]
 }
