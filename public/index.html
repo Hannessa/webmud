@@ -1,23 +1,25 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>RSB Game</title>
-  <link rel="icon" type="image/x-icon" href="/favicon.ico">
-  <link rel="stylesheet" href="style.css">
+  <head>
+    <meta charset="UTF-8">
+    <title>RSB Game</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="stylesheet" href="style.css">
 
-  <link rel="stylesheet" href="/xterm.css" />
-  <script src="/xterm.js"></script>
-  <script src="/xterm-addon-fit.js"></script>
-</head>
-<body>
-  <div class="content">
-    <div class="messages"></div>
-  </div>
-  <input class="inputMessage" placeholder="Type here..."/>
+    <link rel="stylesheet" href="/libs/xterm.css"/>
+    <script src="/libs/xterm.js"></script>
+    <script src="/libs/xterm-addon-fit.js"></script>
+  </head>
+  <body>
+    <div class="content">
+      <div class="messages"></div>
+    </div>
+    <label>
+      <input class="inputMessage" placeholder="Type here..."/>
+    </label>
 
-  <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="/main.js"></script>
-</body>
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/main.js"></script>
+  </body>
 </html>
