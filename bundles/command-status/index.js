@@ -109,7 +109,7 @@ module.exports = {
 				"valueTerm": "",
 				"warningBelow": 0,
 				"warningAbove": 1,
-				"actions": ["gather", "repair", "dig", "build"],
+				"actions": ["harvest", "repair", "dig", "build"],
 				"energy": 5,
 				"yield": 0,
 				"yeildType": ""
@@ -151,6 +151,25 @@ module.exports = {
 				"energy": 3,
 				"yield": 2,
 				"yeildType": "MET"
+			},
+			{
+				"name": "Materials storage",
+				"type": "Module",
+				"description": "General purpose storage for materials.",
+				"status": "Working",
+				"active": true,
+				"error": false,
+				"level": 1,
+				"max": 40,
+				"min": 0,
+				"current": 0,
+				"valueTerm": "Capacity",
+				"warningBelow": 0,
+				"warningAbove": 35,
+				"actions": [],
+				"energy": 0,
+				"yield": 0,
+				"yeildType": ""
 			},
 			{
 				"name": "Module factory",
@@ -202,7 +221,7 @@ module.exports = {
 				"min": 0,
 				"current": 20,
 				"valueTerm": "Stored",
-				"warningBelow": 15,
+				"warningBelow": 50,
 				"warningAbove": 100,
 				"actions": [],
 				"energy": -10,
@@ -277,8 +296,9 @@ module.exports = {
 			if (netEnergy < 5) col = colors.orange
 			else if (netEnergy < 0) col = colors.red
 			colText = chalk.hex(col)
-			output += 'Net energy: ' + colText(netEnergy) + "\n"
-
+			output += 'Net energy: ' + colText(netEnergy) + ' - '
+			if (netEnergy >= 0) output += chalk.green('positive net energy: battery will not deplete')
+			else  output += chalk.hex(colors.orange)(' - NEGATIVE net energy: battery WILL deplete')
 			
 			socket.emit('output', { msg: output });
 
