@@ -7,7 +7,7 @@ module.exports = {
 
 	// Welcome message to be displayed when the user first connects to the MUD
 	welcomeMessage: chalk.yellow("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n\n")
-		+ "You have logged into the " + chalk.cyan("Remote SpaceBot") + " controller tool.",
+		+ "You have logged into the " + chalk.cyanBright("Remote SpaceBot") + " controller tool.",
 
 	// If true, will show general server info on welcome screen
 	showServerInfo: true,

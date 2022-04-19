@@ -95,7 +95,7 @@ module.exports = {
 			}
 			
 			if (!hasMatch) {
-				socket.emit('output', { msg: "That's not a valid command. Type 'help' for a list of commands." });
+				socket.emit('output', { msg: "That's not a valid command. Type " + chalk.bgWhite.black("help") + " for a list of commands." });
 				return;
 			}
 			

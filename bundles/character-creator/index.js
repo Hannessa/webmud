@@ -1,3 +1,4 @@
+const chalk = require("chalk");
 var config = require.main.require('./config.js');
 var server = require.main.require('./bundles/server.js');
 var uuidv4 = require('uuid').v4;
@@ -20,16 +21,16 @@ module.exports = {
 			socket.account.characters = [];
 		}
 		
-		var output = "Choose bot (enter number):\n";
+		var output = chalk.white("Choose bot (enter number):\n");
 		
 		// Also show option for creating new character
-		output += "0) [Register new bot]\n"
+		output += "0) " + chalk.yellow("[Register new bot]\n")
 		
 		// List all characters on this account as 1) <character name>, 2) <character name> etc
 		for (var i = 0; i < socket.account.characters.length; i++) {
 			var characterId = socket.account.characters[i];
 			var character = server.db.getEntity(characterId);
-			output += (i+1) + ") " + character.name + "\n"
+			output += (i+1) + ") " + chalk.greenBright(character.name) + "\n"
 
 		}
 		output += "\n"
@@ -60,7 +61,7 @@ module.exports = {
 		var name = this.botNamesFirst[Math.floor(Math.random() * this.botNamesFirst.length)]
 			+ ' ' + this.botNamesSecond[Math.floor(Math.random() * this.botNamesSecond.length)];
 		var uuid = uuidv4()
-		socket.emit('output', { msg: "You have been assigned bot: " + name + ' / ' + uuid });
+		socket.emit('output', { msg: "You have been assigned bot: " + chalk.green(name) + ' / ' + chalk.gray(uuid) });
 		
 		var character = server.db.insertEntity({
 			name : name,

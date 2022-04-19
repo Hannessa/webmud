@@ -38,7 +38,7 @@ module.exports = {
 		}
 		else {
 			// Account doesn't exist, so create a new one.
-			socket.emit('output', { msg: "Are you sure this is the right e-mail: " + chalk.bgBlue(email) + "?\nType " + chalk.bgWhite('yes') + " or " + chalk.bgWhite('no') });
+			socket.emit('output', { msg: "Are you sure this is the right e-mail: " + chalk.bgBlue.black(email) + "?\nType " + chalk.bgWhite.black('yes') + " or " + chalk.bgWhite.black('no') });
 			
 			socket.once('input', function (data) {
 				if (/^y(es)?$/i.test(data.msg)) {
@@ -53,7 +53,7 @@ module.exports = {
 	},
 	
 	enterPassword: function(socket, account) {
-		socket.emit('output', { msg: "Enter your password:", password: true });
+		socket.emit('output', { msg: chalk.white("Enter your password:"), password: true });
 		
 		socket.once('input', function (data) {
 			var password = data.msg
@@ -72,7 +72,7 @@ module.exports = {
 	},
 	
 	choosePassword : function (socket, email) {
-		socket.emit('output', { msg: "Create a password (6+ characters):", password: true });
+		socket.emit('output', { msg: chalk.white("Create a password (6+ characters):"), password: true });
 		
 		socket.once('input', function (data) {
 			var password = data.msg

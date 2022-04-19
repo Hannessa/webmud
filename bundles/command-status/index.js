@@ -39,8 +39,27 @@ module.exports = {
 		// TODO : move to DB
 		var statuses = [
 			{
+				"name": "Radio",
+				"type": "Circuitry",
+				"description": "Allows for remote control and communication.",
+				"status": "Fully functional",
+				"active": true,
+				"error": false,
+				"level": 1,
+				"max": 1,
+				"min": 0,
+				"current": 1,
+				"valueTerm": "",
+				"warningBelow": 0,
+				"warningAbove": 1,
+				"actions": [],
+				"energy": 3,
+				"yield": 0,
+				"yeildType": ""
+			},
+			{
 				"name": "Memory",
-				"type": "Internal",
+				"type": "Circuitry",
 				"description": "Onboard computer memory. Capacity limits operations.",
 				"status": "Functional but reduced capacity",
 				"active": true,
@@ -49,37 +68,32 @@ module.exports = {
 				"max": 1048576, //2^20
 				"min": 0,
 				"current": 128,
+				"valueTerm": "Bytes",
 				"warningBelow": 1024,
-				"warningAbove": 1048576 //2^20
-			},
-			{
-				"name": "Temperature",
-				"type": "Sensor",
-				"description": "Temperature of bot. Must be kept within operational bounds.",
-				"status": "Disabled",
-				"active": false,
-				"error": true,
-				"meaningfulEmpty": true,
-				"level": 0,
-				"max": 3000,
-				"min": -273.15,
-				"current": 0,
-				"warningBelow": -200,
-				"warningAbove": 500
+				"warningAbove": 1048576, //2^20
+				"actions": [],
+				"energy": 2,
+				"yield": 0,
+				"yeildType": ""
 			},
 			{
 				"name": "Legs",
 				"type": "Actuator",
-				"description": "Claw-like legs. Faciliate latching onto objects and movement against objects.",
+				"description": "Claw-like legs. Faciliate latching and movement.",
 				"status": "Latched to surface but motor stuck",
 				"active": false,
 				"error": true,
 				"level": 1,
-				"max": 100,
+				"max": 1,
 				"min": 0,
 				"current": 0,
+				"valueTerm": "",
 				"warningBelow": 0,
-				"warningAbove": 100
+				"warningAbove": 1,
+				"actions": ["crawl", "push", "latch"],
+				"energy": 10,
+				"yield": 0,
+				"yeildType": ""
 			},
 			{
 				"name": "Arms",
@@ -89,23 +103,16 @@ module.exports = {
 				"active": false,
 				"error": false,
 				"level": 1,
-				"max": 100,
+				"max": 1,
 				"min": 0,
 				"current": 0,
+				"valueTerm": "",
 				"warningBelow": 0,
-				"warningAbove": 100
-			},
-			{
-				"name": "Mouth",
-				"type": "Intake",
-				"description": "Materials injestion. Allows materials to be injested and processed.",
-				"status": "Idle",
-				"active": false,
-				"error": false,
-				"level": 1,
-				"max": 100,
-				"min": 0,
-				"current": 0
+				"warningAbove": 1,
+				"actions": ["gather", "repair", "dig", "build"],
+				"energy": 5,
+				"yield": 0,
+				"yeildType": ""
 			},
 			{
 				"name": "Silicon extractor",
@@ -115,11 +122,16 @@ module.exports = {
 				"active": false,
 				"error": false,
 				"level": 1,
-				"max": 100,
+				"max": 1,
 				"min": 0,
 				"current": 0,
+				"valueTerm": "",
 				"warningBelow": 0,
-				"warningAbove": 100
+				"warningAbove": 1,
+				"actions": [],
+				"energy": 2,
+				"yield": 1,
+				"yeildType": "SIL"
 			},
 			{
 				"name": "Metals extractor",
@@ -129,9 +141,16 @@ module.exports = {
 				"active": false,
 				"error": false,
 				"level": 1,
-				"max": 100,
+				"max": 1,
 				"min": 0,
-				"current": 0
+				"current": 0,
+				"valueTerm": "",
+				"warningBelow": 0,
+				"warningAbove": 1,
+				"actions": [],
+				"energy": 3,
+				"yield": 2,
+				"yeildType": "MET"
 			},
 			{
 				"name": "Module factory",
@@ -141,11 +160,16 @@ module.exports = {
 				"active": false,
 				"error": false,
 				"level": 1,
-				"max": 100,
+				"max": 1,
 				"min": 0,
 				"current": 0,
+				"valueTerm": "",
 				"warningBelow": 0,
-				"warningAbove": 100
+				"warningAbove": 1,
+				"actions": ["fabricate"],
+				"energy": 40,
+				"yield": 0.4,
+				"yeildType": "MOD"
 			},
 			{
 				"name": "Solar panel",
@@ -158,8 +182,13 @@ module.exports = {
 				"max": 100,
 				"min": 0,
 				"current": 5,
+				"valueTerm": "Energy input",
 				"warningBelow": 20,
-				"warningAbove": 100
+				"warningAbove": 100,
+				"actions": [],
+				"energy": 0,
+				"yield": 6,
+				"yeildType": "NRG"
 			},
 			{
 				"name": "Battery",
@@ -172,8 +201,13 @@ module.exports = {
 				"max": 20,
 				"min": 0,
 				"current": 20,
+				"valueTerm": "Stored",
 				"warningBelow": 15,
-				"warningAbove": 100
+				"warningAbove": 100,
+				"actions": [],
+				"energy": -10,
+				"yield": 0,
+				"yeildType": ""
 			},
 			{
 				"name": "Fuel",
@@ -186,8 +220,13 @@ module.exports = {
 				"max": 100,
 				"min": 0,
 				"current": 0,
+				"valueTerm": "Stored",
 				"warningBelow": 40,
-				"warningAbove": 100
+				"warningAbove": 100,
+				"actions": [],
+				"energy": 0,
+				"yield": 0,
+				"yeildType": ""
 			},
 			{
 				"name": "Ion Engine",
@@ -197,11 +236,16 @@ module.exports = {
 				"active": false,
 				"error": true,
 				"level": 1,
-				"max": 100,
+				"max": 1,
 				"min": 0,
 				"current": 0,
+				"valueTerm": "Thrust",
 				"warningBelow": 0,
-				"warningAbove": 100
+				"warningAbove": 1,
+				"actions": ["fly"],
+				"energy": 1000,
+				"yield": 0,
+				"yeildType": ""
 			},
 		]
 
@@ -209,18 +253,33 @@ module.exports = {
 
 		// "Status". No arguments (i.e. "status" or "status bot"), so status of bot
 		if (arguments == "" || arguments == "bot") {
-			output = ''
+			var output = chalk.white("Energy\tYields\tDetails\n")
+			var netEnergy = 0
+			var availableEnergy = 0
 			statuses.forEach(status => {
 				var col = colors.cyan
 				if (status.error) col = colors.red
 				else if (status.current < status.warningBelow || status.current > status.warningAbove) col = colors.orange
 				else if (status.active) col = colors.green
 				const colText = chalk.hex(col)
-				output += colText.bold(status.name) + colText('(' + status.type + ') ' + (status.active ? '[ACTIVE]' : '[INACTIVE]') + ' ' + status.status + '' + (status.error ? ' [ERROR!]' : '') + ', ' + status.current + '/' + status.max + (status.min != 0 ? ' (min ' + status.min + ')' : '')  + '\n');
+				output += (status.active && !status.error && status.energy != 0 ? chalk.white(status.energy) : "  ") + "\t" + (status.active && !status.error && status.yeildType !== "" ? chalk.white(status.yield + " " + status.yeildType) : "    ") + "\t" + (status.active ? chalk.greenBright('[ACTIVE]   ') : chalk.gray('[INACTIVE] ')) + colText.bold(status.name) + '' + (status.error ? chalk.redBright(' [ERR]') : '') + '\n';
+				availableEnergy += status.active && !status.error ? status.energy * -1 : 0
+				if (status.active && !status.error && status.yeildType === "NRG") netEnergy += status.yield
+				else if (status.active && !status.error && status.energy > 0) netEnergy -= status.energy
 			})
-			output += '\n'
+			var col = colors.green
+			if (availableEnergy < 5) col = colors.orange
+			else if (availableEnergy < 0) col = colors.red
+			var colText = chalk.hex(col)
+			output += 'Available energy: ' + colText(availableEnergy) + "\n"
+
+			col = colors.green
+			if (netEnergy < 5) col = colors.orange
+			else if (netEnergy < 0) col = colors.red
+			colText = chalk.hex(col)
+			output += 'Net energy: ' + colText(netEnergy) + "\n"
+
 			
-			//world.sendMessage(output, character);
 			socket.emit('output', { msg: output });
 
 		}
@@ -236,13 +295,18 @@ module.exports = {
 			const colText = chalk.hex(col)
 
 			if (status) {
-				output += 'Name: ' + colText.bold(status.name) + '\n';
-				output += 'Type: ' + colText(status.type) + '\n';
-				output += 'Description: ' + colText(status.description) + '\n';
-				output += 'Status: ' + colText(status.status) + '\n';
-				output += 'Is Active?: ' + colText(status.active ? 'YES' : 'NO') + '\n';
-				output += 'Has Error?: ' + colText(status.error ? 'YES' : 'NO') + '\n';
-				output += 'Value: ' + colText(status.current + ' of (min)' + status.min + '/(max)' + status.max)  + '\n';
+				output += chalk.white('Name: \t\t') + chalk.bold(status.name) + '\n';
+				output += chalk.white('Type: \t\t') + status.type + '\n';
+				output += chalk.white('Description: \t') + status.description + '\n';
+				output += chalk.white('Status: \t') + colText(status.status) + '\n';
+				output += chalk.white('Is Active?: \t') + (status.active ? chalk.greenBright('YES') : 'NO') + '\n';
+				output += chalk.white('Has Error?: \t') + (status.error ? chalk.redBright('YES') : 'NO') + '\n';
+				if (status.valueTerm !== "") output += chalk.white(status.valueTerm + ': \t') + (status.current < status.warningBelow || status.current > status.warningAbove ? chalk.yellow(status.current) : chalk.greenBright(status.current)) + (status.min != 0 ? ' / ' + status.max : ' of ' + status.min + ' to ' + status.max) + '\n';
+				output += chalk.white('Energy usage: \t') + (status.energy <= 0 ? chalk.green(status.energy) : chalk.yellow(status.energy))  + '\n';
+				if (status.yield > 0) output += chalk.white('Yield: \t\t') + chalk.bold(status.yield) + " units per hour" + '\n';
+				output += chalk.white('Actions: \t')
+				if (status.actions.length == 0) output += chalk.gray("None") + '\n';
+				else output += status.actions.join(", ") + '\n';
 				output += '\n';
 			}
 			else {
