@@ -1,26 +1,39 @@
 const chalk = require("chalk");
 
 module.exports = {
-
-	// Name of MUD
+	// name of this project
 	name: 'RSB',
 
-	// Welcome message to be displayed when the user first connects to the MUD
+	// welcome message to be displayed when the user first connects to the MUD
 	welcomeMessage: chalk.yellow("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n\n")
 		+ "You have logged into the " + chalk.cyanBright("Remote SpaceBot") + " controller tool.",
 
-	// If true, will show general server info on welcome screen
+	// if true, will show general server info on welcome screen
 	showServerInfo: true,
 
 	// Port of web server
 	port: 3000,
 
-	// Date and time in world
-	timeUpdateRate: 2500, // In milliseconds, how fast one game minute passes. 2.5 sec means one hour is 2.5 minutes, a day is 60 minutes
-	startingYear: 4291, // Year the game starts in
-	yearNames: ['Three-Headed Monkey', 'Seven Moons', 'Dolphin', 'Three Suns', 'Goat', 'Happy Farmer', 'Worm', 'Lute', 'Snake', 'Elephant King', 'Leopard God', 'Pig',],
+	// date and time in world
+	timeUpdateRate: 2500, // in milliseconds, how fast one game minute passes. 2.5 sec means one hour is 2.5 minutes,
+							// a day is 60 minutes
+	startingYear: 4291, // year the game starts in
+	yearNames: [
+		'Three-Headed Monkey',
+		'Seven Moons',
+		'Dolphin',
+		'Three Suns',
+		'Goat',
+		'Happy Farmer',
+		'Worm',
+		'Lute',
+		'Snake',
+		'Elephant King',
+		'Leopard God',
+		'Pig'
+	],
 
-	// What bundles to load (loaded in order from top to bottom)
+	// bundles to load (loaded sequentially)
 	"bundles" : [
 		"database-lokijs",
 		"welcome",
@@ -45,11 +58,11 @@ module.exports = {
 		"command-status",
 	],
 
-	// What bundle to run when a user first connection
+	// initial bundle to run
 	"welcomeBundle" : "welcome",
 
-	// Database settings
+	// database settings
 	"databasePath" : "database.json",
-	"databaseSaveDelay" : 4000, // How often the database is saved, in milliseconds
-	"securityKey": "AvqaKuKfWMiAUd8ctAG4xVrAv6be*rT7", // Should be unique for better password encryption
+	"databaseSaveDelay" : 4000, // frequency of DB save, in milliseconds
+	"securityKey": "AvqaKuKfWMiAUd8ctAG4xVrAv6be*rT7", // should be unique for better password encryption
 }
