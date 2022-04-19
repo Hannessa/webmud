@@ -1,16 +1,16 @@
-var config = require.main.require('./config.js');
-var server = require.main.require('./bundles/server.js');
-var loki = require('lokijs');
-var fs = require('fs');
+const config = require.main.require('./config.js');
+const server = require.main.require('./bundles/server.js');
+const loki = require('lokijs');
+const fs = require('fs');
 
-// Sets up a LokiJS database
+// sets up a LokiJS database
 module.exports = {
-	// Called when bundle is loaded
+	// called when bundle is loaded
 	init : function () {
-		// Setup abstract database layer
+		// setup abstract database layer
 		server.db = this.db;		
 		
-		// Setup loki database
+		// setup loki database
 		server.lokijs = new loki(config.databasePath, {
 			//autoload: true, // Load database now into memory
 			//autoloadCallback: this.databaseInit.bind(this),
@@ -20,7 +20,7 @@ module.exports = {
 			//saveCallback: function() { console.log('World saved.'); },
 		});
 
-		// Load database
+		// load database
 		this.databaseInit();
 	},
 	
@@ -29,8 +29,8 @@ module.exports = {
 		// Attempt to load database file into loki
 		if (fs.existsSync(config.databasePath)) {
 			// Make sure global variables are preserved by setting it after load
-			var json = JSON.parse(fs.readFileSync(config.databasePath))
-			var global = json.global
+			const json = JSON.parse(fs.readFileSync(config.databasePath));
+			const global = json.global;
 			server.lokijs.loadJSONObject(json);
 			server.lokijs.global = global
 		}
@@ -43,8 +43,7 @@ module.exports = {
 				fs.renameSync(config.databasePath + '.bak', config.databasePath);
 				this.databaseInit()
 				return;
-			}
-			else {
+			} else {
 				// No backup file, so create new database
 				console.log("No database found, creating new database.");
 				server.lokijsData = {};
@@ -62,8 +61,7 @@ module.exports = {
 				// Save new database to file
 				server.lokijs.saveDatabase();
 			}
-		}
-		else {
+		} else {
 			// Data was found in database, so just load collections
 			server.lokijsData = {};
 			server.lokijsData["accounts"] = server.lokijs.getCollection('accounts'); //  indices: ['email'] 
@@ -149,7 +147,6 @@ module.exports = {
 		//getRoomAtLocation(x, y, z) {
 		//	server.db.query('entities', {'x': x,  } );
 		//}
-	
 	}
 }
 

@@ -1,15 +1,17 @@
 const chalk = require("chalk");
-var config = require.main.require('./config.js');
-var server = require.main.require('./bundles/server.js');
-var bcrypt = require('bcrypt');
+const config = require.main.require('./config.js');
+const server = require.main.require('./bundles/server.js');
+const bcrypt = require('bcrypt');
 
-// This bundle is called from the "welcome" bundle and gives step-by-step instructions for logging in or creating a new account.
+// this bundle is called from the "welcome" bundle and gives step-by-step instructions for logging in or creating
+// a new account.
 module.exports = {
-	// Called when bundle is loaded
+	// called when bundle is loaded
 	init : function () {
+		// nothing to do
 	},
 	
-	// Called when bundle is run
+	// called when bundle is run
 	run : function (socket) {
 		this.enterEmail(socket);
 	},
@@ -18,7 +20,7 @@ module.exports = {
 		socket.emit('output', { msg: "Enter your e-mail:" });
 		
 		socket.once('input', function (data) {
-			// Email should always be lowercase.
+			// email should always be lowercase.
 			data.msg = data.msg.toLowerCase();
 			if (validateEmail(data.msg)) {
 				this.confirmEmail(socket, data.msg);
@@ -29,16 +31,22 @@ module.exports = {
 	},
 	
 	confirmEmail : function (socket, email) {
-		// Check if account already exists for this email in database
-		var rows = server.db.query('accounts', {'email': email } ); //var rows = server.accounts.where(function(obj){ return obj.email == email; });
+		// check if account already exists for this email in database
+		const rows = server.db.query('accounts', {'email': email});
 		
-		if (rows.length == 1) {
-			// Account exists, so ask for password.
+		if (rows.length === 1) {
+			// account exists, so ask for password.
 			this.enterPassword(socket, rows[0]);
-		}
-		else {
-			// Account doesn't exist, so create a new one.
-			socket.emit('output', { msg: "Are you sure this is the right e-mail: " + chalk.bgBlue.black(email) + "?\nType " + chalk.bgWhite.black('yes') + " or " + chalk.bgWhite.black('no') });
+		} else {
+			// account doesn't exist, so create a new one.
+			socket.emit('output', {
+				msg: "Are you sure this is the right e-mail: "
+					+ chalk.bgBlue.black(email)
+					+ "?\nType "
+					+ chalk.bgWhite.black('yes')
+					+ " or "
+					+ chalk.bgWhite.black('no')
+			});
 			
 			socket.once('input', function (data) {
 				if (/^y(es)?$/i.test(data.msg)) {
@@ -56,7 +64,7 @@ module.exports = {
 		socket.emit('output', { msg: chalk.white("Enter your password:"), password: true });
 		
 		socket.once('input', function (data) {
-			var password = data.msg
+			const password = data.msg;
 
 			// Compare stored password with entered password (hashed)
 			if (this.checkPassword(password, account.password)) {
@@ -75,21 +83,21 @@ module.exports = {
 		socket.emit('output', { msg: chalk.white("Create a password (6+ characters):"), password: true });
 		
 		socket.once('input', function (data) {
-			var password = data.msg
+			const password = data.msg;
 
 			if (/^.{6,}$/.test(password)) {
 				// Password chosen, so save account to database
-				var passwordHashed = this.hashPassword(password);
+				const passwordHashed = this.hashPassword(password);
 
-				var role = "user";
-				if (server.db.count('accounts') == 0) {
+				let role = "user";
+				if (server.db.count('accounts') === 0) {
 					// First account, so set role to superuser.
 					role = "superuser";
 					socket.emit('output', { msg: "First account on server, so has been set to " + chalk.underline("Superuser") + "." });
 				}
 
 				// Save user with encrypted password
-				var account = server.db.insert("accounts", {
+				const account = server.db.insert("accounts", {
 					email: email,
 					password: passwordHashed,
 					role: role
@@ -101,8 +109,6 @@ module.exports = {
 				
 				// Run the character creator
 				server.runBundle("character-creator", socket);
-				
-				//this.createCharacter(socket);
 			} else {
 				this.choosePassword(socket);
 			}
@@ -121,6 +127,6 @@ module.exports = {
 
 // Validate email. Source: https://stackoverflow.com/a/46181
 function validateEmail(email) {
-    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(email);
+	const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	return re.test(email);
 }

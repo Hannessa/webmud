@@ -1,12 +1,12 @@
 const chalk = require("chalk");
-var config = require.main.require('./config.js');
-var server = require.main.require('./bundles/server.js');
+const config = require.main.require('./config.js');
+const server = require.main.require('./bundles/server.js');
 
 module.exports = {
-	// Called when bundle is loaded
+	// called when bundle is loaded
 	init : function () {
-		var command = {};
-		
+		const command = {};
+
 		command["keywords"] = ["help", "h"];
 		command["run"] = this.runCommand.bind(this);
 		command["helpCategory"] = "Meta";
@@ -17,23 +17,24 @@ module.exports = {
 	},
 	
 	runCommand : function (arguments, character, socket) {
-		// Command can only be used by player-controlled characters (not NPC:s)
+		let content;
+		let i;
+// command can only be used by player-controlled characters (not NPC:s)
 		if (!socket) { return; }
 		
 		arguments = arguments.toLowerCase();
 		
 		// "help" without argument. Display all available commands. 
-		if (arguments == "") {
-			// Todo: Also display and sort by categories!
-			var categories = [];
-			var commandList = {};
-			var commandOrder = [];
-			var commandsByCategory = {};
-			for (var i = 0; i < server.commands.length; i++) {
-				var command = server.commands[i];
+		if (arguments === "") {
+			const categories = [];
+			const commandList = {};
+			const commandOrder = [];
+			const commandsByCategory = {};
+			for (i = 0; i < server.commands.length; i++) {
+				let command = server.commands[i];
 				commandList[command.keywords[0]] = command;
 				commandOrder.push(command.keywords[0]);
-				if (command.helpCategory && categories.indexOf(command.helpCategory) == -1) {
+				if (command.helpCategory && categories.indexOf(command.helpCategory) === -1) {
 					categories.push(command.helpCategory);
 				}
 
@@ -47,60 +48,44 @@ module.exports = {
 			categories.sort();
 			
 			
-			var content = chalk.bold("Available commands") + "\nType \"help <command>\" for additional information.\n\n";
-			/*for (var i = 0; i < commandOrder.length; i++) {
-				var commandName = commandOrder[i];
-				var command = commandList[commandName];
-				
-				var maxDescLength = 100;
-				if (command.helpText.length < maxDescLength) {
-					var truncatedDesc = command.helpText;
-				}
-				else {
-					var truncatedDesc = command.helpText.substring(0,maxDescLength) + "...";
-				}
-				
-				content += commandName + " - " + this.htmlEntities(truncatedDesc) + "<br>";
+			content = chalk.bold("Available commands") + "\nType \"help <command>\" for additional information.\n\n";
 
-			}*/
-
-			for (var i = 0; i < categories.length; i++) {
-				var category = categories[i];
+			for (i = 0; i < categories.length; i++) {
+				const category = categories[i];
 				content += chalk.bold(category) + " - ";
 				content += commandsByCategory[category].join(", ");
 				content += "\n";
 			}
-				/*for (var j = 0; j < commandsByCategory[category].length; j++) {
-					var commandName = commandsByCategory[category][j];
-					var command = commandList[commandName];
-					content += commandName + " - " + this.htmlEntities(truncatedDesc) + "<br>";*/
-
 
 			socket.emit('output', { msg: content });
-		}
-		// "help <command>" with argument. Display info about a specific command.
-		else {
-			// Loop through all commands until we have a match
-			var hasMatch = false;
-			var command;
-			for (var i = 0; i < server.commands.length; i++) {
+		} else {
+			// "help <command>" with argument. Display info about a specific command.
+
+			// loop through all commands until we have a match
+			let hasMatch = false;
+			let command;
+			for (i = 0; i < server.commands.length; i++) {
 				command = server.commands[i];
 
 				// Check if the typed in command matches any of the current command's keywords
-				if (command.keywords.indexOf(arguments) != -1) {
-					// And exit from loop, we don't want more matches.
+				if (command.keywords.indexOf(arguments) !== -1) {
+					// and exit from loop, we don't want more matches.
 					hasMatch = true;
 					break;
 				}
 			}
 			
 			if (!hasMatch) {
-				socket.emit('output', { msg: "That's not a valid command. Type " + chalk.bgWhite.black("help") + " for a list of commands." });
+				socket.emit('output', {
+					msg: "That's not a valid command. Type "
+						+ chalk.bgWhite.black("help")
+						+ " for a list of commands."
+				});
 				return;
 			}
 			
-			// Display command information
-			var content = "";
+			// display command information
+			content = "";
 			content += chalk.bold(command.keywords[0]) + "\n";
 			if (command.keywords[1]) {
 				content += "Aliases: " + command.keywords.join(", ") + "\n";

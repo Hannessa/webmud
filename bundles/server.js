@@ -1,12 +1,12 @@
-var config = require.main.require('./config.js');
+const config = require.main.require('./config.js');
 
-// Custom socket server with support for bundles, i.e. extensions
+// custom socket server with support for bundles, i.e. extensions
 module.exports = {
 	bundles: {},
 	
-	// Load bundles and prepare welcome bundle
+	// load bundles and prepare welcome bundle
 	start: function(io) {
-		// Load bundles
+		// load bundles
 		this.loadBundles();
 		
 		// Listener for new connections to the socket server
@@ -16,31 +16,31 @@ module.exports = {
 		}.bind(this));
 	},
 	
-	// Load all bundles that are defined in the config-file 
+	// load all bundles that are defined in the config-file
 	loadBundles: function() {
-		for (var i = 0; i < config.bundles.length; i++) {
-			var bundleName = config.bundles[i];
+		for (let i = 0; i < config.bundles.length; i++) {
+			const bundleName = config.bundles[i];
 			this.loadBundle(bundleName);
 		}
 	},
 	
-	// Loads a specific bundle by name
+	// loads a specific bundle by name
 	loadBundle: function(bundleName) {
 		this.bundles[bundleName] = require.main.require('./bundles/' + bundleName);
 			
-		// If bundle has an init function, then call it.
+		// if bundle has an init function, then call it.
 		if ("init" in this.bundles[bundleName]) {
 			this.bundles[bundleName].init();
 		}
 	},
 	
-	// Calls a bundle's run() method
+	// calls a bundle's run() method
 	runBundle: function(bundleName, socket) {
 		if (!("run" in this.bundles[bundleName])) {
 			throw new Error('No run() method exists for bundle: ' + bundleName + ". Change config.startBundle.");
 		}
 		
-		socket.removeAllListeners(); // Remove all listeners from previous bundle
-		this.bundles[bundleName].run(socket); // Call run() method on bundle
+		socket.removeAllListeners(); // remove all listeners from previous bundle
+		this.bundles[bundleName].run(socket); // call run() method on bundle
 	},
 }

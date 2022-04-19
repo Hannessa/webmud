@@ -1,10 +1,11 @@
 const chalk = require("chalk");
-var config = require.main.require('./config.js');
-var server = require.main.require('./bundles/server.js');
+const config = require.main.require('./config.js');
+const server = require.main.require('./bundles/server.js');
 
-// After choosing a character, you're sent into the game world. This bundle also handles parsing of in-game commands, so should be loaded before any other commands bundles.
+// after choosing a character, you're sent into the game world. This bundle also handles parsing of in-game commands,
+// so should be loaded before any other commands bundles.
 module.exports = {	
-	// Called when bundle is loaded
+	// called when bundle is loaded
 	init : function () {
 		// Prepare commands array.
 		if (!("commands" in server)) { server.commands = []; }
@@ -45,10 +46,10 @@ module.exports = {
 		
 		// If no location is set on character, find room with tag "startLocation" and move character there.
 		if (!("location" in socket.character)) {
-			var startRoom = server.db.getEntitiesByTag('startLocation')[0];
+			const startRoom = server.db.getEntitiesByTag('startLocation')[0];
 
 			this.moveObject(socket.character, startRoom);
-		};
+		}
 		
 		socket.emit('output', { msg: "Logged into bot " + chalk.bold(socket.character.name) + ".\n\n" });
 
@@ -61,8 +62,8 @@ module.exports = {
 	},
 
 	getActivePlayerCharacters : function() {
-		var characters = [];
-		for (var i in server.characterToPlayer) {
+		const characters = [];
+		for (let i in server.characterToPlayer) {
 			if (server.characterToPlayer[i].character) {
 				characters.push(server.characterToPlayer[i].character);
 			}
@@ -71,21 +72,20 @@ module.exports = {
 	},
 	
 	prepareDatabase : function() {
-		var numRooms = server.db.getEntitiesByType("room").length;
+		const numRooms = server.db.getEntitiesByType("room").length;
 
-		if (numRooms == 0) {
-
-			var room1 = server.db.insertEntity({
-					type : "room",
-					name : "Starting Room",
-					desc : "Welcome to your first room in WebMUD. This is just an example of what can be created.",
-					tags : ["startLocation", "outside"],
+		if (numRooms === 0) {
+			const room1 = server.db.insertEntity({
+					type: "room",
+					name: "Starting Room",
+					desc: "Welcome to your first room in WebMUD. This is just an example of what can be created.",
+					tags: ["startLocation", "outside"],
 					x: 0,
 					y: 0,
-					z: 0 ,
+					z: 0,
 				}
 			);
-			
+
 			/*var room1 = server.db.insert("objects", {
 					type : "room",
 					name : "Connected Room",
@@ -146,7 +146,7 @@ module.exports = {
 	
 	// Check if game object is visible
 	isObjectVisible : function (object) {
-		isVisible = true;
+		let isVisible = true;
 		
 		// Player characters that don't have a player connected should not be visible
 		if (object.playerCharacter && !this.getSocketFromCharacter(object)) {
@@ -158,23 +158,22 @@ module.exports = {
 	
 	// Run a command for a specific character
 	runCommand : function (message, character) {
-		
-		
 		// Try to get socket if character has a player connected
-		var socket = this.getSocketFromCharacter(character);
-		
+		const socket = this.getSocketFromCharacter(character);
+
 		// Places first parameter in [1] and remaining string in [2]
-		var parsedInput = message.trim().match(/^(\S+)(?:\s+(.+))?/i);
-		var commandString = parsedInput && parsedInput[1] ? parsedInput[1].toLowerCase() : ""; // Commands are always lower case
-		var argumentsString = parsedInput && parsedInput[2] ? parsedInput[2] : "";
-		
+		const parsedInput = message.trim().match(/^(\S+)(?:\s+(.+))?/i);
+		// Commands are always lower case
+		const commandString = parsedInput && parsedInput[1] ? parsedInput[1].toLowerCase() : "";
+		const argumentsString = parsedInput && parsedInput[2] ? parsedInput[2] : "";
+
 		// Loop through all commands until we have a match
-		var hasMatch = false;
-		for (var i = 0; i < server.commands.length; i++) {
-			var command = server.commands[i];
+		let hasMatch = false;
+		for (let i = 0; i < server.commands.length; i++) {
+			const command = server.commands[i];
 
 			// Check if the typed in command matches any of the current command's keywords
-			if (command.keywords.indexOf(commandString) != -1) {
+			if (command.keywords.indexOf(commandString) !== -1) {
 				// We have a match! Run command
 				command.run(argumentsString, character, socket);
 				
@@ -185,7 +184,11 @@ module.exports = {
 		}
 		
 		if (!hasMatch && socket) {
-			socket.emit('output', { msg: "That's not a valid command. Type " + chalk.bgWhite.black("help") + " for a list of commands." });
+			socket.emit('output', {
+				msg: "That's not a valid command. Type "
+					+ chalk.bgWhite.black("help")
+					+ " for a list of commands."
+			});
 		}
 	},
 	
@@ -194,11 +197,11 @@ module.exports = {
 		// Check if the object is at any location currently
 		if ("location" in object) {
 			// Get current location
-			var currentLocation = server.db.getEntity(object.location);
-			
+			const currentLocation = server.db.getEntity(object.location);
+
 			// Remove this object from current location
-			var objectId = server.db.getId(object);
-			var index = currentLocation.contents.indexOf(objectId);
+			const objectId = server.db.getId(object);
+			const index = currentLocation.contents.indexOf(objectId);
 			currentLocation.contents.splice(index, 1);
 		}
 		
@@ -210,7 +213,7 @@ module.exports = {
 			targetObject.contents = [];
 		}
 		
-		if (targetObject.contents.indexOf(server.db.getId(object)) == -1) {
+		if (targetObject.contents.indexOf(server.db.getId(object)) === -1) {
 			targetObject.contents.push(server.db.getId(object));
 		}
 	},
@@ -219,24 +222,20 @@ module.exports = {
 	findTargetObject : function (target, character) {
 		target = target.toLowerCase(); 
 		
-		// "Room"
-		if (target == "room") {
+		if (target === "room") {
 			return server.db.getEntity(character.location);
-		}
-		
-		// "Self"
-		else if (target == "self") {
+		} else if (target === "self") {
 			return character;
 		}
 		
 		// Try to find object in room
-		var room = server.db.getEntity(character.location);
+		const room = server.db.getEntity(character.location);
 
 		if (room.contents) {
-			for (var i = 0; i < room.contents.length; i++) {
-				var objectId = room.contents[i];
-				var object = server.db.getEntity(objectId);
-				
+			for (let i = 0; i < room.contents.length; i++) {
+				const objectId = room.contents[i];
+				const object = server.db.getEntity(objectId);
+
 				// If object name contains target string, consider it a match and return it as target object
 				// TODO: Change to match only each word in name (split by space), and only from start of string.
 				if (object.name.toLowerCase().indexOf(target) > -1) {
@@ -250,10 +249,10 @@ module.exports = {
 
 	findTargetInObject : function (target, parent) {
 		if (parent.contents) {
-			for (var i = 0; i < parent.contents.length; i++) {
-				var objectId = parent.contents[i];
-				var object = server.db.getEntity(objectId);
-				
+			for (let i = 0; i < parent.contents.length; i++) {
+				const objectId = parent.contents[i];
+				const object = server.db.getEntity(objectId);
+
 				// If object name contains target string, consider it a match and return it as target object
 				// TODO: Change to match only each word in name (split by space), and only from start of string.
 				if (object.name.toLowerCase().indexOf(target) > -1) {
@@ -265,7 +264,8 @@ module.exports = {
 	},
 
 	
-	// Method for returning gender words for a character. Using male as base to get difference between "his"/"him". (Potential problem: missing difference between "her" and "hers"?)
+	// Method for returning gender words for a character. Using male as base to get difference between "his"/"him".
+	// (Potential problem: missing difference between "her" and "hers"?)
 	getGenderWords : function (character) {
 		if (!character.gender) {
 			return {
@@ -278,7 +278,7 @@ module.exports = {
 				himCaps : "It",
 				himselfCaps : "Itself",
 			};
-		} else if (character.gender == "female") {
+		} else if (character.gender === "female") {
 			return {
 				he : "she",
 				his : "her",
@@ -289,7 +289,7 @@ module.exports = {
 				himCaps : "Her",
 				himselfCaps : "Herself",
 			};
-		} else if (character.gender == "male") {
+		} else if (character.gender === "male") {
 			return {
 				he : "he",
 				his : "his",
@@ -303,34 +303,35 @@ module.exports = {
 		}
 	},
 	
-	// Send a message to a character or a room in the game world. If room, the "exclude" variable can be used to exclude characters from recieving the message
+	// Send a message to a character or a room in the game world. If room, the "exclude" variable can be used to
+	// exclude characters from receiving the message
 	sendMessage : function (message, target, exclude) {
-		// Todo: Move "socket" to separate module, as to not depend on Sockets.IO and easily switch to others? Also add support for color codes in messages
+		// Todo: Move "socket" to separate module, as to not depend on Sockets.IO and easily switch to others?
+		//  Also add support for color codes in messages
 		
 		// If exclude is not an array, make it an array
 		if (exclude && !Array.isArray(exclude)) {
 			exclude = [exclude];
 		}
 
-		if (target.type == "character") {
+		if (target.type === "character") {
 			// If target is character, only send message if we have a player connected to the character
-			var socket = this.getSocketFromCharacter(target);
-			
+			const socket = this.getSocketFromCharacter(target);
+
 			if (socket) {
 				// Character has player, so send message
 				socket.emit('output', { msg: message });
 			}
-			
-		}
-		else if (target.type == "room") {
+		} else if (target.type === "room") {
 			// If target is room, send message to all characters within the room, except those in the exclude variable
-			for (var i = 0; i < target.contents.length; i++) {
-				var object = server.db.getEntity(target.contents[i]);
-				
+			for (let i = 0; i < target.contents.length; i++) {
+				const object = server.db.getEntity(target.contents[i]);
+
 				// Only send message if we have a character.
-				if (object.type == "character") {
-					// Only send if character is not equal to excluded variable, or is not contained in excluded variable (if it's an array).
-					if (!exclude || (exclude.indexOf(object) == -1)) {
+				if (object.type === "character") {
+					// Only send if character is not equal to excluded variable, or is not contained in excluded
+					// variable (if it's an array).
+					if (!exclude || (exclude.indexOf(object) === -1)) {
 						this.sendMessage(message, object);
 					}
 				}

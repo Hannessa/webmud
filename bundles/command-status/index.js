@@ -1,7 +1,7 @@
 const chalk = require("chalk");
-var config = require.main.require('./config.js');
-var server = require.main.require('./bundles/server.js');
-var world = server.bundles.world;
+const config = require.main.require('./config.js');
+const server = require.main.require('./bundles/server.js');
+const world = server.bundles.world;
 const colors = {
 	"red": "#FF0000",
 	"green": "#00FF00",
@@ -12,12 +12,12 @@ const colors = {
 	"white": "#FFFFFF"
 }
 
-// Command to get the status of the currnet bot.
+// command to get the status of the current bot.
 module.exports = {
-	// Called when bundle is loaded
+	// called when bundle is loaded
 	init : function () {
-		var command = {};
-		
+		const command = {};
+
 		command["keywords"] = ["status", "s"];
 		command["run"] = this.runCommand;
 		command["helpCategory"] = "Information";
@@ -28,16 +28,17 @@ module.exports = {
 	},
 	
 	runCommand : function (arguments, character, socket) {		
-		// Command can only be used by player-controlled characters (not NPC:s)
+		let output;
+// Command can only be used by player-controlled characters (not NPC:s)
 		if (!socket) { return; }
 		
-		// Make arguments case insensitive
+		// Make arguments case-insensitive
 		arguments = arguments.toLowerCase();
 
 		//var room = server.db.getEntity(socket.character.location);
 
 		// TODO : move to DB
-		var statuses = [
+		const statuses = [
 			{
 				"name": "Radio",
 				"type": "Circuitry",
@@ -266,52 +267,80 @@ module.exports = {
 				"yield": 0,
 				"yeildType": ""
 			},
-		]
+		];
 
 		socket.emit('output', { msg: "Bot status:" });
 
 		// "Status". No arguments (i.e. "status" or "status bot"), so status of bot
-		if (arguments == "" || arguments == "bot") {
-			var output = chalk.white("Energy\tYields\tDetails\n")
-			var netEnergy = 0
-			var availableEnergy = 0
+		if (arguments === "" || arguments === "bot") {
+			let output = chalk.white("Energy\tYields\tDetails\n");
+			let netEnergy = 0;
+			let availableEnergy = 0;
 			statuses.forEach(status => {
-				var col = colors.cyan
-				if (status.error) col = colors.red
-				else if (status.current < status.warningBelow || status.current > status.warningAbove) col = colors.orange
-				else if (status.active) col = colors.green
+				let col = colors.cyan;
+				if (status.error) {
+					col = colors.red
+				} else if (status.current < status.warningBelow || status.current > status.warningAbove) {
+					col = colors.orange
+				} else if (status.active) {
+					col = colors.green
+				}
 				const colText = chalk.hex(col)
-				output += (status.active && !status.error && status.energy != 0 ? chalk.white(status.energy) : "  ") + "\t" + (status.active && !status.error && status.yeildType !== "" ? chalk.white(status.yield + " " + status.yeildType) : "    ") + "\t" + (status.active ? chalk.greenBright('[ACTIVE]   ') : chalk.gray('[INACTIVE] ')) + colText.bold(status.name) + '' + (status.error ? chalk.redBright(' [ERR]') : '') + '\n';
+				output += (status.active && !status.error && status.energy !== 0 ? chalk.white(status.energy) : "  ")
+					+ "\t"
+					+ (status.active && !status.error && status.yeildType !== ""
+						? chalk.white(status.yield + " " + status.yeildType)
+						: "    "
+					) + "\t"
+					+ (status.active ? chalk.greenBright('[ACTIVE]   ') : chalk.gray('[INACTIVE] '))
+					+ colText.bold(status.name)
+					+ ''
+					+ (status.error ? chalk.redBright(' [ERR]') : '')
+					+ '\n';
 				availableEnergy += status.active && !status.error ? status.energy * -1 : 0
-				if (status.active && !status.error && status.yeildType === "NRG") netEnergy += status.yield
-				else if (status.active && !status.error && status.energy > 0) netEnergy -= status.energy
+				if (status.active && !status.error && status.yeildType === "NRG") {
+					netEnergy += status.yield
+				} else if (status.active && !status.error && status.energy > 0) {
+					netEnergy -= status.energy
+				}
 			})
-			var col = colors.green
-			if (availableEnergy < 5) col = colors.orange
-			else if (availableEnergy < 0) col = colors.red
-			var colText = chalk.hex(col)
+			let col = colors.green
+			if (availableEnergy < 5) {
+				col = colors.orange
+			} else if (availableEnergy < 0) {
+				col = colors.red
+			}
+			let colText = chalk.hex(col);
 			output += 'Available energy: ' + colText(availableEnergy) + "\n"
 
 			col = colors.green
-			if (netEnergy < 5) col = colors.orange
-			else if (netEnergy < 0) col = colors.red
+			if (netEnergy < 5) {
+				col = colors.orange
+			} else if (netEnergy < 0) {
+				col = colors.red
+			}
 			colText = chalk.hex(col)
 			output += 'Net energy: ' + colText(netEnergy) + ' - '
-			if (netEnergy >= 0) output += chalk.green('positive net energy: battery will not deplete')
-			else  output += chalk.hex(colors.orange)(' - NEGATIVE net energy: battery WILL deplete')
+			if (netEnergy >= 0) {
+				output += chalk.green('positive net energy: battery will not deplete')
+			} else {
+				output += chalk.hex(colors.orange)(' - NEGATIVE net energy: battery WILL deplete')
+			}
 			
 			socket.emit('output', { msg: output });
+		} else if (arguments) {
+			// "Status <object>". Get a specific status
+			const status = statuses.find(el => el.name.toLowerCase() === arguments);
 
-		}
-		// "Status <object>". Get a specific status
-		else if (arguments) {
-			var status = statuses.find(el => el.name.toLowerCase() === arguments)
-
-			var output = "";
-			var col = colors.cyan
-			if (status.error) col = colors.red
-			else if (status.current < status.warningBelow || status.current > status.warningAbove) col = colors.orange
-			else if (status.active) col = colors.green
+			let output = "";
+			let col = colors.cyan;
+			if (status.error) {
+				col = colors.red
+			} else if (status.current < status.warningBelow || status.current > status.warningAbove) {
+				col = colors.orange
+			} else if (status.active) {
+				col = colors.green
+			}
 			const colText = chalk.hex(col)
 
 			if (status) {
@@ -321,15 +350,28 @@ module.exports = {
 				output += chalk.white('Status: \t') + colText(status.status) + '\n';
 				output += chalk.white('Is Active?: \t') + (status.active ? chalk.greenBright('YES') : 'NO') + '\n';
 				output += chalk.white('Has Error?: \t') + (status.error ? chalk.redBright('YES') : 'NO') + '\n';
-				if (status.valueTerm !== "") output += chalk.white(status.valueTerm + ': \t') + (status.current < status.warningBelow || status.current > status.warningAbove ? chalk.yellow(status.current) : chalk.greenBright(status.current)) + (status.min != 0 ? ' / ' + status.max : ' of ' + status.min + ' to ' + status.max) + '\n';
-				output += chalk.white('Energy usage: \t') + (status.energy <= 0 ? chalk.green(status.energy) : chalk.yellow(status.energy))  + '\n';
-				if (status.yield > 0) output += chalk.white('Yield: \t\t') + chalk.bold(status.yield) + " units per hour" + '\n';
+				if (status.valueTerm !== "") {
+					output += chalk.white(status.valueTerm + ': \t')
+						+ (status.current < status.warningBelow || status.current > status.warningAbove
+							? chalk.yellow(status.current)
+							: chalk.greenBright(status.current)
+						) + (status.min !== 0 ? ' / ' + status.max : ' of ' + status.min + ' to ' + status.max)
+						+ '\n';
+				}
+				output += chalk.white('Energy usage: \t')
+					+ (status.energy <= 0 ? chalk.green(status.energy) : chalk.yellow(status.energy))
+					+ '\n';
+				if (status.yield > 0) {
+					output += chalk.white('Yield: \t\t') + chalk.bold(status.yield) + " units per hour" + '\n';
+				}
 				output += chalk.white('Actions: \t')
-				if (status.actions.length == 0) output += chalk.gray("None") + '\n';
-				else output += status.actions.join(", ") + '\n';
+				if (status.actions.length === 0) {
+					output += chalk.gray("None") + '\n';
+				} else {
+					output += status.actions.join(", ") + '\n';
+				}
 				output += '\n';
-			}
-			else {
+			} else {
 				output += "Status not found for area " + chalk.bgRed(arguments)
 			}
 			socket.emit('output', { msg: output });

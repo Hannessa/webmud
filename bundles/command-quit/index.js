@@ -1,12 +1,12 @@
-var config = require.main.require('./config.js');
-var server = require.main.require('./bundles/server.js');
+const config = require.main.require('./config.js');
+const server = require.main.require('./bundles/server.js');
 
-// Command for disconnecting from a character.
+// command for disconnecting from a character.
 module.exports = {
-	// Called when bundle is loaded
+	// called when bundle is loaded
 	init : function () {
-		var command = {};
-		
+		const command = {};
+
 		command["keywords"] = ["quit", "q", "exit"];
 		command["run"] = this.runCommand;
 		command["helpCategory"] = "Meta";
@@ -17,14 +17,13 @@ module.exports = {
 	},
 	
 	runCommand : function (arguments, character) {
-		// Try to get socket if character has a player connected
-		var socket = server.bundles.world.getSocketFromCharacter(character);
-		
+		// try to get socket if character has a player connected
+		const socket = server.bundles.world.getSocketFromCharacter(character);
+
 		// Command is only interesting for player characters
 		if (!socket) { return; }
 		
 		// Disconnect character
 		server.bundles.world.disconnectPlayerCharacter(socket);
-		
 	}
 }
