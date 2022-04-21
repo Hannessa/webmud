@@ -8,6 +8,7 @@ A modular [MUD](https://en.wikipedia.org/wiki/MUD) framework for [Node.js](https
 - Starts a simple web server (Express) with an interface for connecting to the MUD right through your browser.
 - A modular approach from the ground up, allowing it to be used as a micro framework for any type of MUD.
 - Includes basic MUD objects such as rooms and characters, and basic commands for world interaction.
+- Basic account creation and authentication, with passwords hashed with bcrypt.
 
 ## Installation
 
