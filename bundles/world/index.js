@@ -62,7 +62,7 @@ module.exports = {
 	getActivePlayerCharacters : function() {
 		var characters = [];
 		for (var i in server.characterToPlayer) {
-			if (server.characterToPlayer[i].character) {
+			if (server.characterToPlayer[i] && server.characterToPlayer[i].character) {
 				characters.push(server.characterToPlayer[i].character);
 			}
 		}
