@@ -170,7 +170,7 @@ module.exports = {
 			}
 
 			// Contents in object (not characters as they should have hidden inventory)
-			if (object.contents && content.type == "object") {
+			if (object.contents && object.type == "object") {
 				var contents = [];
 				for (var i = 0; i < object.contents.length; i++) {
 					var objectId = object.contents[i];
