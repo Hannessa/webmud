@@ -121,6 +121,10 @@ module.exports = {
 		getEntity : function(id) {
 			return server.lokijsData["entities"].get(id);
 		},
+
+		getAllEntities : function() {
+			return server.lokijsData["entities"].find();
+		},
 		
 		getAccount : function(id) {
 			return server.lokijsData["accounts"].get(id);

@@ -1,5 +1,6 @@
 var config = require.main.require('./config.js');
 var server = require.main.require('./bundles/server.js');
+var world = server.bundles.world;
 
 module.exports = {
 	// Called when bundle is loaded
@@ -118,6 +119,7 @@ module.exports = {
 		}
 		else if (propertySplit.length - currentSplit == 4) {
 			socket.emit('output', { msg: "Cannot set property of that nested depth." });
+			return
 		}
 
 		if (newProperty) {
@@ -126,7 +128,8 @@ module.exports = {
 			socket.emit('output', { msg: "Property has been changed." });
 		}
 
-		
+		// Restart timers for this entity (if there are any)
+		world.restartEntityTimers(object)
 		
 	}
 }

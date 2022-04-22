@@ -13,6 +13,93 @@ module.exports = {
 		
 		// Object to keep track of player controlled characters.
 		server.characterToPlayer = {};
+
+		// Object to keep track of timers connected to entities.
+		server.entityTimers = {};
+
+		// Start all timers on all entities
+		this.restartTimers()
+	},
+
+	restartTimers: function() {
+		// Restart all timers on all entities.
+		var entities = server.db.getAllEntities()
+		for (var entityKey in entities) {
+			this.restartEntityTimers(entities[entityKey]);
+		}
+	},
+
+	// Restart all timers for an entity
+	restartEntityTimers: function(entity) {
+		var entityId = server.db.getId(entity)
+
+		// Make sure to stop existing timers first
+		this.stopTimers(entity);
+		server.entityTimers[entityId] = [];
+
+		// Start timers for entity
+		// Timer for random movement
+		if (entity.randomMovementMin) {
+			this.newRandomMovementTimer(entity)
+		}
+	},
+
+	newRandomMovementTimer: function(entity) {
+		var entityId = server.db.getId(entity)
+
+		var timerDelay = this.getRandomMovementTimerDelay(entity);
+
+		var timerId = setTimeout(function() {
+			// Move in a random direction, if current room has any exits
+			var room = server.db.getEntity(entity.location);
+			if (room && room.exits && Object.keys(room.exits).length > 0) {
+				var exits = Object.keys(room.exits);
+
+				// Get random direction (e, w, s, n, u or d)
+				var direction = exits[Math.floor(exits.length * Math.random())];
+
+				// Move in that direction by running it as a command
+				this.runCommand(direction, entity);
+			}
+
+			// Remove old timer
+			var index = server.entityTimers[entityId].indexOf(timerId)
+			if (index > -1) {
+				server.entityTimers[entityId].splice(index, 1);
+			}
+
+			// Start timer again
+			this.newRandomMovementTimer(entity);
+		}.bind(this), timerDelay);
+
+		server.entityTimers[entityId].push(timerId);
+
+		return timerId
+	},
+
+	getRandomMovementTimerDelay: function(entity) {
+		var seconds = 1
+		if (entity.randomMovementMin && entity.randomMovementMax) {
+			seconds = Math.random() * (entity.randomMovementMax - entity.randomMovementMin) + entity.randomMovementMin;
+		} else {
+			seconds = entity.randomMovementMin;
+		}
+		return seconds * 1000
+	},
+
+	// Stop all timers for an entity
+	stopTimers: function(entity) {
+		var entityId = server.db.getId(entity)
+
+		if (server.entityTimers[entityId]) {
+			var timers = server.entityTimers[entityId];
+
+			for (var i = 0; i < timers.length; i++) {
+				clearTimeout(timers[i])
+			}
+		}
+
+		server.entityTimers[entityId] = [];
 	},
 	
 	// This is called when a user has chosen a character and enters the game world.
