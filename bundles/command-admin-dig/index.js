@@ -79,7 +79,7 @@ module.exports = {
 		var toRoom = server.db.insertEntity({
 			type : "room",
 			name : argumentsSplit[1] ? argumentsSplit[1] : "New Room",
-			desc : "This is a new room.",
+			desc : "",
 			tags : [],
 			x: newX,
 			y: newY,

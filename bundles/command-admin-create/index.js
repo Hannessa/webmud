@@ -37,7 +37,7 @@ module.exports = {
 				"name": name,
 			}
 
-			world.sendMessage("Created " + type + " from scratch (not template) with name " + name, character);
+			world.sendMessage("Created " + type + " from scratch with name " + name, character);
 
 
 		} else {
