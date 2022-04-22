@@ -106,8 +106,9 @@ module.exports = {
 		for (var i in playerCharacters) {
 			var character = playerCharacters[i];
 			var room = db.getEntity(character.location);
-			if (room.tags.includes("outside")) {
 
+			// Only display time notice if character is not inside
+			if (!room.tags.includes("inside")) {
 				world.sendMessage(message, character);
 			}
 
@@ -118,8 +119,9 @@ module.exports = {
 		// Get current room
 		var room = db.getEntity(character.location);
 		
-		if (!room.tags.includes("outside")) {
-			world.sendMessage("You cannot see the sky from here. You're unsure what time it is.", character);
+		// Command shouldn't work if character is inside
+		if (room.tags.includes("inside")) {
+			world.sendMessage("You cannot see the sky from here.", character);
 			return;
 		}
 
