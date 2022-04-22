@@ -193,14 +193,51 @@ ul {
 	color: cyan;
 }
 
-.roomExits {
-	color: #AAAA00;
+.exit {
+	color: #00d3d3;
 }
 
 .roomDesc {
 }
 
+.roomExits {
+  margin-top: 15px
+}
+
+.roomContents {
+  margin-top: 15px
+}
+
+.roomContents::first-letter {
+  text-transform:uppercase;
+}
+
+
+
+
 .selections, .indent {
 	padding-top: 10px;
 	padding-left: 20px;
+}
+
+.object, .object-info .name {
+	color: #a3a3a3;
+	/*color: #AAAA00;*/
+
+}
+
+.character, .character-info .name {
+	color: #ffd100;
+}
+
+.object-info::first-letter, .character-info::first-letter {
+  text-transform:uppercase;
+}
+
+.object-info .weight, .character-info .weight {
+	margin-top: 15px;
+}
+
+.entityLeaves::first-letter, .entityArrives::first-letter {
+  text-transform:uppercase;
 }

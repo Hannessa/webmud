@@ -119,8 +119,8 @@ module.exports = {
 			world.moveObject(character, targetRoom);
 			
 			world.sendMessage(`You move ${directions[direction]}.`, character);
-			world.sendMessage(`${character.name} moves ${directions[direction]}.`, currentRoom, [character]); // Message to others in old room
-			world.sendMessage(`${character.name} arrives from ${directionsOpposite[direction]}.`, targetRoom, [character]); // Message to others in new room
+			world.sendMessage(`<div class="entityLeaves"><span class="${character.type}">${character.name}</span> moves ${directions[direction]}.</div>`, currentRoom, [character]); // Message to others in old room
+			world.sendMessage(`<div class="entityArrives"><span class="${character.type}">${character.name}</span> arrives from ${directionsOpposite[direction]}.</div>`, targetRoom, [character]); // Message to others in new room
 			
 			// Run "look" command to look at the room we're standing in.
 			world.runCommand("look", character);

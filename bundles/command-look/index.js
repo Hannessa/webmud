@@ -35,42 +35,49 @@ module.exports = {
 			
 			// Room description
 			var output = "";
-			output += '<span class="roomTitle">' + room.name + '</span><br>';
-			output += '<span class="roomDesc">' + room.desc + '</span><br>';
+			output += '<span class="roomTitle">' + room.name + '</span>';
+			if (room.desc) {
+				output += '<br><span class="roomDesc">' + room.desc + '</span>';
+			}
 			
 			// Exits
-			if (room.exits) {
-				/*if (room.exits.n) {
+			if (room.exits && Object.keys(room.exits).length > 0) {
+				output += '<div class="roomExits">'
+
+				if (room.exits.n) {
 					var targetRoom = server.db.getEntity(room.exits.n.target);
-					socket.emit('output', { msg: 'North: ' + '<span class="roomTitle">' + targetRoom.name + '</span>' });
-				}
-				
-				if (room.exits.s) {
-					var targetRoom = server.db.getEntity(room.exits.s.target);
-					socket.emit('output', { msg: 'South: ' + '<span class="roomTitle">' + targetRoom.name + '</span>' });
-				}
-				
-				if (room.exits.w) {
-					var targetRoom = server.db.getEntity(room.exits.w.target);
-					socket.emit('output', { msg: 'West: ' + '<span class="roomTitle">' + targetRoom.name + '</span>' });
+					output += '<span class="exit">North -</span> ' + '<span class="exitTitle">' + targetRoom.name + '</span><br>';
 				}
 				
 				if (room.exits.e) {
 					var targetRoom = server.db.getEntity(room.exits.e.target);
-					socket.emit('output', { msg: 'East: ' + '<span class="roomTitle">' + targetRoom.name + '</span>' });
+					output += '<span class="exit">East -</span> ' + '<span class="exitTitle">' + targetRoom.name + '</span><br>';
+				}
+
+				if (room.exits.w) {
+					var targetRoom = server.db.getEntity(room.exits.w.target);
+					output += '<span class="exit">West -</span> ' + '<span class="exitTitle">' + targetRoom.name + '</span><br>';
+				}				
+
+				if (room.exits.s) {
+					var targetRoom = server.db.getEntity(room.exits.s.target);
+					output += '<span class="exit">South -</span> ' + '<span class="exitTitle">' + targetRoom.name + '</span><br>';
 				}
 				
 				if (room.exits.u) {
 					var targetRoom = server.db.getEntity(room.exits.u.target);
-					socket.emit('output', { msg: 'Up: ' + '<span class="roomTitle">' + targetRoom.name + '</span>' });
+					output += '<span class="exit">Up -</span> ' + '<span class="exitTitle">' + targetRoom.name + '</span><br>';
 				}
 				
 				if (room.exits.d) {
 					var targetRoom = server.db.getEntity(room.exits.d.target);
-					socket.emit('output', { msg: 'Down: ' + '<span class="roomTitle">' + targetRoom.name + '</span>' });
-				}*/
-				
-				var validExits = [];
+					output += '<span class="exit">Down -</span> ' + '<span class="exitTitle">' + targetRoom.name + '</span><br>';
+
+				}
+
+				output += '</div>'
+
+				/*var validExits = [];
 				
 				if (room.exits.n) { validExits.push("North"); }
 				if (room.exits.e) { validExits.push("East"); }
@@ -81,7 +88,7 @@ module.exports = {
 
 				if (validExits.length) {
 					output += '<div class="roomExits">Exits: ' + validExits.join(", ") + '</div>';
-				}
+				}*/
 			}
 			
 			// Contents in room
@@ -110,7 +117,9 @@ module.exports = {
 				}
 				
 				if (contents.length > 0) {
-					output += "<br>" + contents.join(", ");
+					output += '<div class="roomContents">'
+					output += contents.join(", ");
+					output += '</div>'
 				}
 			}
 			
@@ -121,6 +130,14 @@ module.exports = {
 		}
 		// "Look <object>". Examine a specific object
 		else if (arguments) {
+			// Look at sky to see time
+			if (arguments == "sky") {
+				if (server.bundles['command-time']) {
+					world.runCommand("time", character);
+					return
+				}
+			}
+
 			// Try to find target object in room
 			var object = server.bundles.world.findTargetInObject(arguments, room);
 
@@ -141,15 +158,78 @@ module.exports = {
 			}
 
 			// We found an object!
-			var message = "<div class='" + object.type + "'>";
-			message += "<span class='name'>" + object.name + "</span><br><br>";
+			var message = "<div class='" + object.type + "-info'>";
+			message += "<div class='name'>" + object.name + "</div>";
 
 			if (object.desc) {
-				message += "<span class='desc'>" + object.desc + "</span><br><br>";
+				message += "<div class='desc'>" + object.desc + "</div>";
 			}
 
 			if (object.weight) {
-				message += "<span class='weight'>Weight: " + object.weight + "</span><br><br>";
+				message += "<div class='weight'>Weight: " + object.weight + " kg</div>";
+			}
+
+			// Contents in object (not characters as they should have hidden inventory)
+			if (object.contents && content.type == "object") {
+				var contents = [];
+				for (var i = 0; i < object.contents.length; i++) {
+					var objectId = object.contents[i];
+					var entity = server.db.getEntity(objectId);
+					
+					// If object is yourself, don't draw it
+					if (entity == socket.character) {
+						continue;
+					}
+					
+					// Don't display hidden objects
+					if (!server.bundles.world.isObjectVisible(entity)) {
+						continue;
+					}
+					
+					if (entity.type == "object") {
+						contents.push('<span class="object">' + entity.name + '</span>');
+					} else if (entity.type == "character") {
+						contents.push('<span class="character">' + entity.name + '</span>');
+					}
+					
+				}
+				
+				if (contents.length > 0) {
+					output += '<div class="contentsTitle">Contents:</div>'
+					output += '<div class="contents">'
+					output += contents.join(", ");
+					output += '</div>'
+				}
+			}
+
+			// Equipment on characters should be visible
+			if (object.equipment) {
+				var equipment = [];
+				for (var i = 0; i < object.equipment.length; i++) {
+					var objectId = object.equipment[i];
+					var entity = server.db.getEntity(objectId);
+					
+					// If object is yourself, don't draw it
+					if (entity == socket.character) {
+						continue;
+					}
+					
+					// Don't display hidden objects
+					if (!server.bundles.world.isObjectVisible(entity)) {
+						continue;
+					}
+					
+					equipment.push('<span class="' + entity.type + '">' + entity.name + '</span>'); // TODO: Also display where is equipped (finger, head, etc) or possibly item type (ring, helmet, etc)
+					
+				}
+
+				if (equipment.length > 0) {
+					output += '<div class="equipmentTitle">Equipment:</div>'
+					output += '<div class="equipment">'
+					output += equipment.join("");
+					output += '</div>'
+				}
+				message += "<div class='equipped'>Equipped</div>";
 			}
 
 			world.sendMessage(message, character);
